@@ -226,11 +226,10 @@ ol.steps li::before{content:counter(st);position:absolute;left:0;top:.42rem;
 .badge.b3{background:var(--violet-soft);color:var(--violet)}
 
 /* ===================== Matematica inline ===================== */
-.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:-.55em;
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
   line-height:1.12;margin:0 .1em;font-size:.92em}
 .frac .nu{padding:0 .28em}
 .frac .de{border-top:1.5px solid currentColor;padding:0 .28em}
-.frac.mid{vertical-align:middle}
 .sq{white-space:nowrap}
 .sq .sq-i{border-top:1.6px solid currentColor;padding:0 .18em 0 .08em}
 .lim{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
@@ -672,7 +671,7 @@ footer{border-top:1px solid var(--border);background:var(--surface);
           <p>In alcuni casi la sola struttura non basta a decidere il risultato: il limite
              «dipende dai dettagli». Sono le <strong>forme indeterminate</strong> (o di
              indecisione):</p>
-          <div class="formula center big"><span class="frac mid"><span class="nu">0</span><span class="de">0</span></span> &nbsp; <span class="frac mid"><span class="nu">∞</span><span class="de">∞</span></span> &nbsp; ∞ − ∞ &nbsp; 0 · ∞ &nbsp; 1<sup>∞</sup> &nbsp; 0<sup>0</sup> &nbsp; ∞<sup>0</sup></div>
+          <div class="formula center big"><span class="frac"><span class="nu">0</span><span class="de">0</span></span> &nbsp; <span class="frac"><span class="nu">∞</span><span class="de">∞</span></span> &nbsp; ∞ − ∞ &nbsp; 0 · ∞ &nbsp; 1<sup>∞</sup> &nbsp; 0<sup>0</sup> &nbsp; ∞<sup>0</sup></div>
           <p>Una forma indeterminata <strong>non</strong> significa «il limite non esiste»: significa
              che bisogna <em>lavorare</em> l'espressione (trasformarla in una forma equivalente) per
              scoprire il risultato, che può essere un numero, infinito, oppure non esistere.</p>
