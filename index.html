@@ -230,6 +230,7 @@ ol.steps li::before{content:counter(st);position:absolute;left:0;top:.42rem;
   line-height:1.12;margin:0 .1em;font-size:.92em}
 .frac .nu{padding:0 .28em}
 .frac .de{border-top:1.5px solid currentColor;padding:0 .28em}
+.frac.mid{vertical-align:middle}
 .sq{white-space:nowrap}
 .sq .sq-i{border-top:1.6px solid currentColor;padding:0 .18em 0 .08em}
 .lim{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
@@ -671,7 +672,7 @@ footer{border-top:1px solid var(--border);background:var(--surface);
           <p>In alcuni casi la sola struttura non basta a decidere il risultato: il limite
              «dipende dai dettagli». Sono le <strong>forme indeterminate</strong> (o di
              indecisione):</p>
-          <div class="formula center big"><span class="frac"><span class="nu">0</span><span class="de">0</span></span> &nbsp; <span class="frac"><span class="nu">∞</span><span class="de">∞</span></span> &nbsp; ∞ − ∞ &nbsp; 0 · ∞ &nbsp; 1<sup>∞</sup> &nbsp; 0<sup>0</sup> &nbsp; ∞<sup>0</sup></div>
+          <div class="formula center big"><span class="frac mid"><span class="nu">0</span><span class="de">0</span></span> &nbsp; <span class="frac mid"><span class="nu">∞</span><span class="de">∞</span></span> &nbsp; ∞ − ∞ &nbsp; 0 · ∞ &nbsp; 1<sup>∞</sup> &nbsp; 0<sup>0</sup> &nbsp; ∞<sup>0</sup></div>
           <p>Una forma indeterminata <strong>non</strong> significa «il limite non esiste»: significa
              che bisogna <em>lavorare</em> l'espressione (trasformarla in una forma equivalente) per
              scoprire il risultato, che può essere un numero, infinito, oppure non esistere.</p>
@@ -710,7 +711,7 @@ footer{border-top:1px solid var(--border);background:var(--surface);
           <p>Alcuni limiti fondamentali risolvono forme <span class="eqline">0/0</span> o
              <span class="eqline">1<sup>∞</sup></span> e vanno conosciuti a memoria:</p>
           <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">sin x</span><span class="de">x</span></span> = 1 &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">1 − cos x</span><span class="de">x²</span></span> = <span class="frac"><span class="nu">1</span><span class="de">2</span></span></div>
-          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→±∞</span></span> <span class="frac"><span class="nu">(</span></span>1 + <span class="frac"><span class="nu">1</span><span class="de">x</span></span>)<sup>x</sup> = e &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">e<sup>x</sup> − 1</span><span class="de">x</span></span> = 1</div>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→±∞</span></span> (1 + <span class="frac"><span class="nu">1</span><span class="de">x</span></span>)<sup>x</sup> = e &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">e<sup>x</sup> − 1</span><span class="de">x</span></span> = 1</div>
           <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">ln(1 + x)</span><span class="de">x</span></span> = 1</div>
           <div class="note-ok">Il primo limite notevole, <span class="eqline">sin x / x → 1</span>,
             dice che vicino a 0 il seno «assomiglia» a <span class="eqline">x</span>: per piccoli
