@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f9fafb">
+<meta name="description" content="App didattica interattiva: limiti di funzioni, continuità, asintoti e derivate con le loro applicazioni. Teoria, simulazioni e quiz di autovalutazione per il triennio.">
+<title>Limiti e derivate · Analisi matematica</title>
+<style>
+/* ===================== Design system ===================== */
+:root{
+  --color-primary:#2563eb;      /* Blu scientifico */
+  --color-secondary:#1e40af;
+  --color-accent:#f59e0b;       /* Arancio per highlight */
+  --color-success:#10b981;      /* Verde */
+  --color-error:#ef4444;        /* Rosso */
+  --color-bg:#f9fafb;
+  --color-text:#1f2937;
+  --surface:#ffffff;
+  --border:#e5e7eb;
+  --muted:#6b7280;
+  --primary-soft:#eff6ff;
+  --accent-soft:#fef3c7;
+  --accent-deep:#b45309;
+  --success-soft:#d1fae5;
+  --success-deep:#047857;
+  --error-soft:#fee2e2;
+  --error-deep:#b91c1c;
+  --violet:#7c3aed;
+  --violet-soft:#f5f3ff;
+  --radius:12px;
+  --shadow:0 1px 3px rgba(17,24,39,.07);
+  --font-math:"Cambria Math","STIX Two Math","Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--color-bg);color:var(--color-text);
+  font-family:"Inter","Roboto",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;
+  font-size:clamp(15px,2.3vw,16.5px);line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid rgba(37,99,235,.45);outline-offset:2px}
+
+/* ===================== Header ===================== */
+header{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:.85rem 1rem .8rem}
+header .wrap{max-width:1000px;margin:0 auto;display:flex;align-items:baseline;
+  justify-content:space-between;gap:.8rem;flex-wrap:wrap}
+header h1{font-size:clamp(1.12rem,3.8vw,1.45rem);font-weight:800;
+  letter-spacing:-.02em;color:var(--color-text)}
+header .sub{color:var(--muted);font-size:.82em;font-weight:500}
+
+/* ===================== Nav ===================== */
+nav.main{background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:30;overflow-x:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+nav.main .wrap{max-width:1000px;margin:0 auto;display:flex;gap:.4rem;padding:.55rem 1rem}
+nav.main button{flex:0 0 auto;background:var(--color-bg);border:1px solid var(--border);
+  border-radius:999px;padding:.42rem .95rem;font-size:.85em;color:var(--muted);
+  cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:600;min-height:36px;
+  transition:background .15s,border-color .15s,color .15s}
+nav.main button:hover:not(.active){background:var(--primary-soft);
+  border-color:var(--color-primary);color:var(--color-secondary)}
+nav.main button.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+nav.main .grp{flex:0 0 auto;align-self:center;font-size:.7em;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);padding:0 .1rem 0 .5rem}
+nav.main .grp:first-child{padding-left:.1rem}
+
+/* ===================== Layout ===================== */
+main{padding:1.2rem 1rem 2.6rem;max-width:1000px;margin:0 auto}
+section.scene{display:none}
+section.scene.active{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page-head{margin:.2rem 0 1rem;border-left:4px solid var(--color-primary);padding-left:.75rem}
+.page-head.deriv{border-left-color:var(--violet)}
+.page-head h2{font-size:clamp(1.18rem,3.6vw,1.5rem);font-weight:800;letter-spacing:-.015em}
+.page-head .lead{margin-top:.15rem}
+.sec-label{font-size:.72em;font-weight:700;letter-spacing:.1em;color:var(--muted);
+  text-transform:uppercase;margin:1.3rem 0 .45rem}
+.lead{color:var(--muted);font-size:.92em}
+
+/* ===================== Card ===================== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.15rem 1.25rem;margin-bottom:1.1rem;box-shadow:var(--shadow)}
+.card>h2{font-size:1.13em;font-weight:700;letter-spacing:-.01em;margin-bottom:.45rem}
+.card h3{color:var(--color-secondary);font-size:.97em;font-weight:700;margin:.9rem 0 .3rem}
+.card p{margin:.35rem 0}
+.card ul,.card ol{margin:.4rem 0 .4rem 1.3rem}
+.card li{margin:.22rem 0}
+.card li::marker{color:var(--color-primary);font-weight:700}
+
+/* ===================== Accordion ===================== */
+.accordion details{border:1px solid var(--border);border-radius:10px;
+  margin-bottom:.55rem;background:var(--surface);overflow:hidden}
+.accordion details[open]{border-color:#c7d6f5}
+.accordion summary{list-style:none;display:flex;align-items:center;justify-content:space-between;
+  gap:.7rem;padding:.72rem 1rem;cursor:pointer;font-weight:650;font-size:.96em;
+  transition:background .15s,color .15s}
+.accordion summary::-webkit-details-marker{display:none}
+.accordion summary:hover{background:var(--primary-soft);color:var(--color-secondary)}
+.accordion summary::after{content:"";flex:0 0 auto;width:9px;height:9px;
+  border-right:2.2px solid var(--muted);border-bottom:2.2px solid var(--muted);
+  transform:rotate(45deg) translate(-1px,-1px);transition:transform .25s}
+.accordion details[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+.acc-body{padding:.3rem 1rem .95rem;border-top:1px solid var(--border)}
+.acc-body>p:first-child{margin-top:.55rem}
+
+/* ===================== Formule e note ===================== */
+.formula{background:var(--primary-soft);border-left:3px solid var(--color-primary);
+  padding:.55rem .9rem;margin:.55rem 0;border-radius:0 8px 8px 0;
+  font-family:var(--font-math);font-size:1.08em;line-height:1.95;overflow-x:auto}
+.formula.center{text-align:center}
+.formula.big{font-size:1.22em}
+.formula.violet{background:var(--violet-soft);border-left-color:var(--violet)}
+.formula .why{display:block;font-family:"Inter","Roboto",system-ui,sans-serif;
+  font-size:.72em;color:var(--muted);line-height:1.45;margin-top:-.2rem}
+.note-ok{background:var(--success-soft);border-left:3px solid var(--color-success);
+  color:#064e3b;padding:.5rem .9rem;margin:.55rem 0;border-radius:0 8px 8px 0;font-size:.9em}
+.note-warn{background:var(--accent-soft);border-left:3px solid var(--color-accent);
+  color:#78350f;padding:.5rem .9rem;margin:.55rem 0;border-radius:0 8px 8px 0;font-size:.9em}
+.note-err{background:var(--error-soft);border-left:3px solid var(--color-error);
+  color:#7f1d1d;padding:.5rem .9rem;margin:.55rem 0;border-radius:0 8px 8px 0;font-size:.9em}
+.note-key{background:var(--violet-soft);border-left:3px solid var(--violet);
+  color:#4c1d95;padding:.5rem .9rem;margin:.55rem 0;border-radius:0 8px 8px 0;font-size:.9em}
+.sol-box{background:var(--success-soft);border:1px solid #a7f3d0;border-radius:10px;
+  padding:.7rem 1rem;margin:.6rem 0;font-size:1em}
+.sol-box .t{font-size:.72em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--success-deep);display:block;margin-bottom:.15rem}
+
+/* ===================== Tabelle ===================== */
+.tbl-wrap{overflow-x:auto;margin:.6rem 0}
+table.tbl{border-collapse:collapse;width:100%;font-size:.88em;min-width:430px}
+.tbl th{background:var(--primary-soft);color:var(--color-secondary);text-align:left;
+  padding:.45rem .65rem;border-bottom:2px solid var(--color-primary);font-weight:700}
+.tbl td{padding:.45rem .65rem;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .m{font-family:var(--font-math)}
+.sl-tbls{display:flex;gap:.9rem;flex-wrap:wrap;margin:.45rem 0 .1rem}
+.val-tbl{border-collapse:collapse;font-family:var(--font-math);font-size:.92em}
+.val-tbl caption{caption-side:top;font-family:"Inter","Roboto",system-ui,sans-serif;
+  font-size:.72em;font-weight:700;color:var(--muted);letter-spacing:.04em;
+  text-align:left;margin-bottom:.25rem}
+.val-tbl th{background:var(--primary-soft);color:var(--color-secondary);font-weight:700;
+  padding:.3rem .55rem;border:1px solid var(--border)}
+.val-tbl td{padding:.3rem .6rem;border:1px solid var(--border);text-align:center;min-width:2.7em}
+.val-tbl td.hi{background:var(--accent-soft);color:var(--accent-deep);font-weight:700}
+
+/* ===================== Bottoni ===================== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  border-radius:8px;padding:.5rem 1.05rem;font-family:inherit;font-size:.88em;
+  font-weight:600;cursor:pointer;border:1px solid transparent;
+  transition:background .15s,border-color .15s,color .15s,box-shadow .15s,transform .1s}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--color-primary);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--color-secondary);box-shadow:0 2px 8px rgba(37,99,235,.3)}
+.btn-ghost{background:var(--surface);border-color:var(--border);color:var(--color-secondary)}
+.btn-ghost:hover:not(:disabled){background:var(--primary-soft);border-color:var(--color-primary)}
+.btn-accent{background:var(--color-accent);color:#fff}
+.btn-accent:hover:not(:disabled){background:#d97706}
+.btn-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.45rem 0}
+
+/* ===================== Campi input ===================== */
+input[type=text],input[type=number],select{font-family:inherit;font-size:.92em;
+  padding:.5rem .65rem;border:1px solid var(--border);border-radius:8px;
+  background:var(--surface);color:var(--color-text);width:100%;min-height:40px}
+input[type=text]:focus,input[type=number]:focus,select:focus{outline:none;
+  border-color:var(--color-primary);box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+.field label{display:block;font-size:.78em;font-weight:600;color:var(--muted);margin-bottom:.22rem}
+input[type=range]{accent-color:var(--color-primary);min-height:26px}
+.ctrl{display:grid;gap:.5rem;margin:.2rem 0 .7rem}
+.ctrl label{display:flex;align-items:center;gap:.6rem;font-size:.89em}
+.ctrl label .nm{color:var(--muted);min-width:2.2em;font-weight:600}
+.ctrl label input[type=range]{flex:1;min-width:0}
+.ctrl label .v{min-width:3.4em;text-align:right;font-weight:700;color:var(--color-secondary);
+  font-variant-numeric:tabular-nums}
+
+/* ===================== Simulazioni ===================== */
+.sim-layout{display:grid;grid-template-columns:1.08fr 1fr;gap:1.15rem;align-items:start;margin-top:.6rem}
+@media(max-width:740px){.sim-layout{grid-template-columns:1fr}}
+.sim-pane,.ctrl-pane{min-width:0}
+canvas.plot{width:100%;height:auto;display:block;border:1px solid var(--border);
+  border-radius:10px;background:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0 0;font-size:.76em}
+.legend span{display:inline-flex;align-items:center;gap:.32rem;background:var(--color-bg);
+  padding:.18rem .55rem;border-radius:999px;border:1px solid var(--border);color:var(--muted)}
+.legend i{display:inline-block;width:13px;height:5px;border-radius:3px}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:.45rem;margin:.55rem 0;font-size:.87em}
+.read .it{background:var(--color-bg);padding:.42rem .6rem;border-radius:8px;border:1px solid var(--border)}
+.read .it .l{color:var(--muted);font-size:.76em;display:block;margin-bottom:.1rem;font-weight:600}
+.read .it .v{font-weight:700;font-variant-numeric:tabular-nums}
+.read .it .v.m{font-family:var(--font-math);font-variant-numeric:normal}
+.case-banner{padding:.55rem .9rem;border-radius:8px;font-weight:600;font-size:.9em;
+  border:1px solid;margin:.55rem 0}
+.case-banner.c2{background:var(--success-soft);border-color:#a7f3d0;color:var(--success-deep)}
+.case-banner.c1{background:var(--accent-soft);border-color:#fde68a;color:var(--accent-deep)}
+.case-banner.c0{background:var(--error-soft);border-color:#fecaca;color:var(--error-deep)}
+.case-banner.cn{background:var(--primary-soft);border-color:#bfdbfe;color:var(--color-secondary)}
+.case-banner.cv{background:var(--violet-soft);border-color:#ddd6fe;color:var(--violet)}
+.eq-display{font-family:var(--font-math);font-size:1.3em;text-align:center;
+  background:var(--primary-soft);border:1px solid #bfdbfe;border-radius:10px;
+  padding:.5rem .8rem;margin-bottom:.6rem;overflow-x:auto;white-space:nowrap}
+.eq-display.violet{background:var(--violet-soft);border-color:#ddd6fe}
+.hint{color:var(--muted);font-size:.82em;margin:.4rem 0}
+.fnpick{display:flex;flex-wrap:wrap;gap:.4rem;margin:.1rem 0 .7rem}
+.fnpick button{background:var(--color-bg);border:1px solid var(--border);border-radius:8px;
+  padding:.4rem .7rem;font-family:var(--font-math);font-size:.94em;color:var(--color-text);
+  cursor:pointer;transition:background .14s,border-color .14s,color .14s;min-height:38px}
+.fnpick button:hover:not(.active){background:var(--primary-soft);border-color:var(--color-primary)}
+.fnpick button.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+
+/* ===================== Passi risolutivi ===================== */
+ol.steps{list-style:none;margin:.6rem 0;counter-reset:st;padding:0}
+ol.steps li{counter-increment:st;position:relative;padding:.3rem 0 .3rem 2.15rem;margin:0;
+  border-bottom:1px dashed var(--border)}
+ol.steps li:last-child{border-bottom:none}
+ol.steps li::before{content:counter(st);position:absolute;left:0;top:.42rem;
+  width:1.5rem;height:1.5rem;border-radius:50%;background:var(--primary-soft);
+  color:var(--color-secondary);font-weight:700;font-size:.76em;
+  display:flex;align-items:center;justify-content:center}
+.step-note{font-size:.82em;color:var(--muted)}
+.eqline{font-family:var(--font-math);font-size:1.06em;line-height:1.9;overflow-x:auto}
+.badge{display:inline-block;border-radius:999px;padding:.05rem .55rem;font-size:.7em;
+  font-weight:700;vertical-align:middle;margin-left:.35rem;letter-spacing:.02em}
+.badge.b1{background:var(--primary-soft);color:var(--color-secondary)}
+.badge.b2{background:var(--accent-soft);color:var(--accent-deep)}
+.badge.b3{background:var(--violet-soft);color:var(--violet)}
+
+/* ===================== Matematica inline ===================== */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:-.55em;
+  line-height:1.12;margin:0 .1em;font-size:.92em}
+.frac .nu{padding:0 .28em}
+.frac .de{border-top:1.5px solid currentColor;padding:0 .28em}
+.sq{white-space:nowrap}
+.sq .sq-i{border-top:1.6px solid currentColor;padding:0 .18em 0 .08em}
+.lim{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
+  font-family:var(--font-math);line-height:1;margin:0 .15em}
+.lim .lt{font-style:italic}
+.lim .lb{font-size:.62em;margin-top:.1em;white-space:nowrap}
+
+/* ===================== Striscia dei segni ===================== */
+.sign-strip{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;
+  margin:.55rem 0;text-align:center;font-size:.86em}
+.sign-strip .col{flex:1;min-width:0;display:flex;flex-direction:column}
+.sign-strip .col+.col{border-left:1px solid var(--border)}
+.sign-strip .v{font-size:.75em;color:var(--muted);padding:.18rem .2rem;background:var(--color-bg);
+  border-bottom:1px solid var(--border);font-family:var(--font-math);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.sign-strip .s{padding:.25rem .2rem;font-weight:800}
+.sign-strip .s.pos{background:var(--success-soft);color:var(--success-deep)}
+.sign-strip .s.neg{background:var(--error-soft);color:var(--error-deep)}
+.sign-strip .s.zero{background:var(--color-bg);color:var(--muted)}
+.sign-strip .a{padding:.2rem .2rem;font-size:1.1em;font-weight:700;color:var(--violet);background:var(--violet-soft)}
+.strip-title{font-size:.78em;font-weight:700;color:var(--muted);margin:.6rem 0 0}
+
+/* ===================== Tabs ===================== */
+.tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.85rem}
+.tab{background:var(--color-bg);border:1px solid var(--border);border-radius:999px;
+  padding:.4rem .95rem;font-family:inherit;font-size:.85em;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.tab:hover:not(.active){background:var(--primary-soft);border-color:var(--color-primary);
+  color:var(--color-secondary)}
+.tab.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+
+/* ===================== Quiz ===================== */
+.quiz-hd{display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+  margin-bottom:.45rem;font-size:.84em;color:var(--muted);font-weight:600}
+.quiz-hd .score{color:var(--color-secondary)}
+.quiz-bar{background:#e5e7eb;border-radius:999px;height:6px;margin-bottom:.95rem;overflow:hidden}
+.quiz-bar i{display:block;background:var(--color-primary);height:100%;border-radius:999px;
+  transition:width .4s cubic-bezier(.4,0,.2,1)}
+.quiz-q{font-weight:650;margin:.2rem 0 .8rem;line-height:1.5;font-size:.97em}
+.quiz-opts{display:grid;gap:.4rem;margin-bottom:.5rem}
+.quiz-btn{background:var(--color-bg);border:1.5px solid var(--border);border-radius:8px;
+  padding:.52rem .9rem;text-align:left;cursor:pointer;font-size:.89em;font-family:inherit;
+  color:var(--color-text);line-height:1.4;transition:background .12s,border-color .12s}
+.quiz-btn:not(:disabled):hover{background:var(--primary-soft);border-color:var(--color-primary)}
+.quiz-btn:disabled{cursor:default}
+.quiz-btn.correct{background:var(--success-soft)!important;border-color:var(--color-success)!important;
+  color:#064e3b;font-weight:650}
+.quiz-btn.wrong{background:var(--error-soft)!important;border-color:var(--color-error)!important;
+  color:var(--error-deep)}
+.quiz-exp{padding:.55rem .9rem;border-radius:8px;font-size:.86em;line-height:1.5;margin:.5rem 0}
+.quiz-exp.ok{background:var(--success-soft);border-left:3px solid var(--color-success);color:#064e3b}
+.quiz-exp.no{background:var(--error-soft);border-left:3px solid var(--color-error);color:#7f1d1d}
+.quiz-end{text-align:center;padding:1.2rem .6rem}
+.quiz-end .big{font-size:2rem;font-weight:800;color:var(--color-secondary);
+  font-variant-numeric:tabular-nums}
+.quiz-end p{margin:.4rem 0 .9rem;color:var(--muted)}
+
+/* ===================== Home ===================== */
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:.8rem;margin:.6rem 0}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.05rem;cursor:pointer;text-align:left;font-family:inherit;font-size:1em;
+  color:inherit;box-shadow:var(--shadow);
+  transition:border-color .18s,box-shadow .18s,transform .14s}
+.home-card:hover{border-color:var(--color-primary);box-shadow:0 5px 16px rgba(37,99,235,.14);
+  transform:translateY(-2px)}
+.home-card.dv:hover{border-color:var(--violet);box-shadow:0 5px 16px rgba(124,58,237,.16)}
+.home-card .ico{display:block;width:46px;height:46px;margin-bottom:.5rem;color:var(--color-primary)}
+.home-card.dv .ico{color:var(--violet)}
+.home-card strong{display:block;color:var(--color-secondary);font-size:.99em;margin-bottom:.15rem}
+.home-card.dv strong{color:var(--violet)}
+.home-card span{display:block;color:var(--muted);font-size:.84em;line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem}
+.chips em{font-style:normal;background:var(--primary-soft);color:var(--color-secondary);
+  border-radius:999px;padding:.12rem .6rem;font-size:.72em;font-weight:700}
+.home-sep{font-size:.72em;font-weight:700;letter-spacing:.1em;color:var(--muted);
+  text-transform:uppercase;margin:1.4rem 0 .2rem;display:flex;align-items:center;gap:.6rem}
+.home-sep::after{content:"";flex:1;height:1px;background:var(--border)}
+.home-sep.dv{color:var(--violet)}
+
+/* ===================== Footer ===================== */
+footer{border-top:1px solid var(--border);background:var(--surface);
+  padding:1.1rem 1rem;text-align:center;color:var(--muted);font-size:.8em}
+
+@media(max-width:480px){
+  .card{padding:.95rem .9rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Limiti e derivate</h1>
+    <span class="sub">Analisi matematica · Triennio</span>
+  </div>
+</header>
+
+<nav class="main" aria-label="Sezioni">
+  <div class="wrap" id="mainNav">
+    <button data-target="home" class="active">Home</button>
+    <span class="grp">Limiti</span>
+    <button data-target="lim-concetto">Concetto di limite</button>
+    <button data-target="lim-calcolo">Calcolo e forme indet.</button>
+    <button data-target="lim-continuita">Continuità e asintoti</button>
+    <span class="grp">Derivate</span>
+    <button data-target="der-definizione">Derivata e tangente</button>
+    <button data-target="der-regole">Regole di derivazione</button>
+    <button data-target="der-studio">Studio di funzione</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     HOME
+============================================================ -->
+<section class="scene active" id="home">
+  <div class="card">
+    <h2>Un percorso interattivo su limiti e derivate</h2>
+    <p>Sei sezioni che accompagnano lo studente del triennio dal primo incontro con
+       l'idea di <strong>limite</strong> fino alle applicazioni della <strong>derivata</strong>
+       nello studio di funzione. Ogni sezione è organizzata in tre momenti: la
+       <strong>teoria</strong> essenziale (in schede richiudibili), una <strong>simulazione</strong>
+       da esplorare cambiando funzione e parametri, e la palestra <strong>«Prova tu»</strong>
+       con domande di teoria e di calcolo a risposta chiusa, con correzione e spiegazione immediate.</p>
+    <div class="chips"><em>Teoria</em><em>Simulazioni interattive</em><em>Quiz con feedback</em><em>Funziona anche da mobile</em></div>
+  </div>
+
+  <div class="home-sep">Parte 1 · I limiti</div>
+  <div class="home-grid">
+    <button class="home-card" data-target="lim-concetto">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 38h40M8 42V8" opacity=".35"/>
+        <path d="M9 34C18 34 20 14 28 14c6 0 8 8 14 8"/>
+        <circle cx="28" cy="14" r="3.2" fill="#fff" stroke="#f59e0b"/>
+        <path d="M22 14h12" stroke="#f59e0b" stroke-dasharray="2 3" opacity=".9"/>
+      </svg>
+      <strong>Concetto di limite</strong>
+      <span>Idea intuitiva, definizione, limite finito e infinito, limite destro e sinistro.</span>
+    </button>
+    <button class="home-card" data-target="lim-calcolo">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <text x="3" y="32" font-size="20" font-family="serif" stroke="none" fill="currentColor" font-style="italic">lim</text>
+        <path d="M30 12v24M22 28l8 8 8-8" opacity=".9"/>
+        <path d="M22 18h16" stroke="#f59e0b"/>
+      </svg>
+      <strong>Calcolo e forme indeterminate</strong>
+      <span>Algebra dei limiti, forme <span style="font-family:serif">0/0</span>, <span style="font-family:serif">∞/∞</span>, ∞−∞ e limiti notevoli.</span>
+    </button>
+    <button class="home-card" data-target="lim-continuita">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 38h40M8 42V8" opacity=".35"/>
+        <path d="M30 6v34" stroke="#ef4444" stroke-dasharray="3 3"/>
+        <path d="M10 34c8 0 9-12 17-14" />
+        <path d="M33 10c5 2 6 16 9 16"/>
+      </svg>
+      <strong>Continuità e asintoti</strong>
+      <span>Funzioni continue, punti di discontinuità e asintoti verticali, orizzontali e obliqui.</span>
+    </button>
+  </div>
+
+  <div class="home-sep dv">Parte 2 · Le derivate</div>
+  <div class="home-grid">
+    <button class="home-card dv" data-target="der-definizione">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 38h40M8 42V8" opacity=".35"/>
+        <path d="M8 36C18 36 22 12 40 8"/>
+        <path d="M14 40L40 14" stroke="#f59e0b"/>
+        <circle cx="24" cy="22.5" r="3.1" fill="#7c3aed" stroke="#fff"/>
+      </svg>
+      <strong>Derivata e retta tangente</strong>
+      <span>Rapporto incrementale, definizione di derivata, significato geometrico e derivabilità.</span>
+    </button>
+    <button class="home-card dv" data-target="der-regole">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <text x="4" y="22" font-size="15" font-family="serif" stroke="none" fill="currentColor" font-style="italic">f</text>
+        <text x="13" y="18" font-size="12" font-family="serif" stroke="none" fill="#7c3aed">'</text>
+        <path d="M4 30h40M40 30l-5-4M40 30l-5 4" opacity=".5"/>
+        <path d="M8 40h6v-6h6v-6h6v-6h8" stroke="#7c3aed"/>
+      </svg>
+      <strong>Regole di derivazione</strong>
+      <span>Derivate fondamentali e regole di somma, prodotto, quoziente e funzione composta.</span>
+    </button>
+    <button class="home-card dv" data-target="der-studio">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 38h40M8 42V8" opacity=".35"/>
+        <path d="M9 30C16 30 16 16 24 16s8 16 16 8"/>
+        <circle cx="16" cy="22.4" r="2.8" fill="#10b981" stroke="#fff"/>
+        <circle cx="32" cy="20.6" r="2.8" fill="#ef4444" stroke="#fff"/>
+      </svg>
+      <strong>Studio di funzione</strong>
+      <span>Monotonia, massimi e minimi, concavità, flessi e problemi di ottimizzazione.</span>
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>Come usare l'app</h2>
+    <ol>
+      <li><strong>Leggi la teoria.</strong> Apri le schede una alla volta: ogni scheda contiene definizioni, formule e un esempio svolto.</li>
+      <li><strong>Esplora la simulazione.</strong> Scegli la funzione, muovi i cursori: il grafico, le tabelle di valori e i risultati si aggiornano in tempo reale.</li>
+      <li><strong>Mettiti alla prova.</strong> Rispondi prima al quiz di teoria, poi a quello di calcolo: ogni risposta riceve subito correzione e spiegazione.</li>
+    </ol>
+    <p class="hint">Suggerimento: tieni carta e penna accanto per i quiz di calcolo, e usa la simulazione per controllare i tuoi risultati e «vedere» i limiti e le derivate.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     LIMITI · CONCETTO DI LIMITE
+============================================================ -->
+<section class="scene" id="lim-concetto">
+  <div class="page-head">
+    <h2>Il concetto di limite</h2>
+    <p class="lead">Che cosa significa «la funzione tende a un valore»: idea intuitiva, definizione,
+       limite finito e infinito, limite destro e sinistro.</p>
+  </div>
+
+  <p class="sec-label">Teoria</p>
+  <div class="card">
+    <div class="accordion">
+
+      <details open>
+        <summary>L'idea intuitiva di limite</summary>
+        <div class="acc-body">
+          <p>Il <strong>limite</strong> descrive il comportamento di una funzione
+             <span class="eqline">f(x)</span> quando la variabile <span class="eqline">x</span>
+             si <strong>avvicina</strong> a un valore <span class="eqline">x₀</span>, senza
+             necessariamente raggiungerlo. La domanda è: «<em>verso quale numero si stabilizza
+             <span class="eqline">f(x)</span> man mano che <span class="eqline">x</span> si avvicina a
+             <span class="eqline">x₀</span>?</em>»</p>
+          <p>L'aspetto sorprendente è che <strong>il punto <span class="eqline">x₀</span> può anche
+             non appartenere al dominio</strong>: il limite guarda i valori <em>vicini</em> a
+             <span class="eqline">x₀</span>, non il valore <em>in</em> <span class="eqline">x₀</span>.
+             Consideriamo <span class="eqline">f(x) = (x² − 1)/(x − 1)</span>, non definita in
+             <span class="eqline">x = 1</span>:</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th class="m">x</th><td class="m">0,9</td><td class="m">0,99</td><td class="m">0,999</td><td class="m">→ 1 ←</td><td class="m">1,001</td><td class="m">1,01</td><td class="m">1,1</td></tr>
+            <tr><th class="m">f(x)</th><td class="m">1,9</td><td class="m">1,99</td><td class="m">1,999</td><td class="m">?</td><td class="m">2,001</td><td class="m">2,01</td><td class="m">2,1</td></tr>
+          </table></div>
+          <p>Avvicinando <span class="eqline">x</span> a 1 da entrambe le parti,
+             <span class="eqline">f(x)</span> si avvicina a <strong>2</strong>. Scriviamo:</p>
+          <div class="formula center big"><span class="lim"><span class="lt">lim</span><span class="lb">x→1</span></span> <span class="frac"><span class="nu">x² − 1</span><span class="de">x − 1</span></span> = 2</div>
+          <div class="note-ok">Il limite è il valore «atteso», quello a cui la funzione punta.
+            Che <span class="eqline">f(1)</span> non esista non ha importanza: il limite vale comunque 2.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>La definizione di limite finito</summary>
+        <div class="acc-body">
+          <p>Per dare rigore all'idea «<span class="eqline">f(x)</span> si avvicina a
+             <span class="eqline">L</span>» si usa il linguaggio degli <strong>intorni</strong>.
+             Si dice che <span class="eqline">f</span> ha limite <span class="eqline">L</span> per
+             <span class="eqline">x</span> che tende a <span class="eqline">x₀</span>:</p>
+          <div class="formula center big"><span class="lim"><span class="lt">lim</span><span class="lb">x→x₀</span></span> f(x) = L</div>
+          <p>quando, fissato un margine di errore <span class="eqline">ε &gt; 0</span> piccolo a
+             piacere attorno a <span class="eqline">L</span>, è possibile trovare un intorno di
+             <span class="eqline">x₀</span> (un raggio <span class="eqline">δ &gt; 0</span>) tale che
+             tutti i valori di <span class="eqline">x</span> in quell'intorno (tranne al più
+             <span class="eqline">x₀</span>) abbiano immagine entro il margine:</p>
+          <div class="formula center">∀ ε &gt; 0 &nbsp; ∃ δ &gt; 0 : &nbsp; 0 &lt; |x − x₀| &lt; δ &nbsp;⇒&nbsp; |f(x) − L| &lt; ε</div>
+          <p>In parole: «<em>per quanto stretta sia la fascia orizzontale
+             <span class="eqline">L ± ε</span>, esiste una fascia verticale
+             <span class="eqline">x₀ ± δ</span> entro cui il grafico resta dentro la fascia
+             orizzontale</em>».</p>
+          <div class="note-warn">La condizione <span class="eqline">0 &lt; |x − x₀|</span> esclude
+            <span class="eqline">x = x₀</span>: al limite non interessa il valore nel punto,
+            ma solo l'andamento nelle sue vicinanze.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Limite destro e limite sinistro</summary>
+        <div class="acc-body">
+          <p>Possiamo avvicinarci a <span class="eqline">x₀</span> da due lati:</p>
+          <ul>
+            <li><strong>limite sinistro</strong>: <span class="eqline">x → x₀⁻</span>
+                (valori più piccoli di <span class="eqline">x₀</span>);</li>
+            <li><strong>limite destro</strong>: <span class="eqline">x → x₀⁺</span>
+                (valori più grandi di <span class="eqline">x₀</span>).</li>
+          </ul>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→x₀⁻</span></span> f(x) = ℓ₁ &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→x₀⁺</span></span> f(x) = ℓ₂</div>
+          <div class="note-key"><strong>Teorema.</strong> Il limite (bilatero) esiste ed è uguale a
+            <span class="eqline">L</span> <strong>se e solo se</strong> i due limiti laterali
+            esistono e coincidono: <span class="eqline">ℓ₁ = ℓ₂ = L</span>.</div>
+          <p>Se i due limiti laterali sono diversi, il limite <strong>non esiste</strong>: la
+             funzione «salta» in <span class="eqline">x₀</span>. È il caso, ad esempio, di
+             <span class="eqline">f(x) = |x| / x</span> in <span class="eqline">x = 0</span>,
+             che vale −1 a sinistra e +1 a destra.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Limiti infiniti e limiti all'infinito</summary>
+        <div class="acc-body">
+          <p>Il valore <span class="eqline">x₀</span> e il limite <span class="eqline">L</span>
+             possono essere <strong>finiti</strong> oppure <strong>infiniti</strong>. Si hanno
+             quattro combinazioni.</p>
+          <h3>Limite infinito (al finito)</h3>
+          <p>Se avvicinandosi a <span class="eqline">x₀</span> la funzione cresce o decresce
+             illimitatamente, il limite è <span class="eqline">±∞</span>: la retta
+             <span class="eqline">x = x₀</span> è un <strong>asintoto verticale</strong>.</p>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">1</span><span class="de">x²</span></span> = +∞</div>
+          <h3>Limite all'infinito</h3>
+          <p>Possiamo chiederci cosa accade quando <span class="eqline">x</span> diventa molto
+             grande (<span class="eqline">x → +∞</span>) o molto piccolo
+             (<span class="eqline">x → −∞</span>). Se la funzione si stabilizza su un valore
+             <span class="eqline">L</span>, la retta <span class="eqline">y = L</span> è un
+             <strong>asintoto orizzontale</strong>.</p>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→+∞</span></span> <span class="frac"><span class="nu">1</span><span class="de">x</span></span> = 0 &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→+∞</span></span> (x² + 1) = +∞</div>
+          <div class="note-ok"><strong>I limiti sono il ponte verso gli asintoti:</strong> i limiti
+            al finito che danno ∞ rivelano gli asintoti verticali, i limiti all'infinito che danno
+            un numero rivelano gli asintoti orizzontali.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>I casi possibili (riassunto)</summary>
+        <div class="acc-body">
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th>x tende a…</th><th>limite</th><th>significato</th><th>esempio</th></tr>
+            <tr><td class="m">x₀ finito</td><td class="m">L finito</td><td>la funzione si avvicina a un numero</td><td class="m">lim<sub>x→2</sub>(3x) = 6</td></tr>
+            <tr><td class="m">x₀ finito</td><td class="m">±∞</td><td>asintoto verticale x = x₀</td><td class="m">lim<sub>x→0</sub> 1/x² = +∞</td></tr>
+            <tr><td class="m">±∞</td><td class="m">L finito</td><td>asintoto orizzontale y = L</td><td class="m">lim<sub>x→+∞</sub> 1/x = 0</td></tr>
+            <tr><td class="m">±∞</td><td class="m">±∞</td><td>crescita illimitata</td><td class="m">lim<sub>x→+∞</sub> x³ = +∞</td></tr>
+          </table></div>
+          <div class="note-err"><strong>Il limite può non esistere:</strong> quando il limite
+            sinistro è diverso dal destro (la funzione «salta»), oppure quando la funzione
+            <em>oscilla</em> senza stabilizzarsi (come <span class="eqline">sin(1/x)</span> in 0
+            o <span class="eqline">sin x</span> per <span class="eqline">x → +∞</span>).</div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <p class="sec-label">Simulazione · Avvicinarsi al limite</p>
+  <div class="card">
+    <p>Scegli una funzione e usa il cursore per <strong>avvicinare</strong> <span class="eqline">x</span>
+       al punto <span class="eqline">x₀</span> da sinistra e da destra. Osserva la tabella dei valori e
+       come <span class="eqline">f(x)</span> si stabilizza (o no) sul limite.</p>
+    <div class="fnpick" id="lcPick"></div>
+    <div class="eq-display" id="lcEq"></div>
+    <div class="sim-layout">
+      <div class="sim-pane">
+        <canvas class="plot" id="lcPlot" width="640" height="400" aria-label="Grafico della funzione vicino al punto"></canvas>
+        <div class="legend">
+          <span><i style="background:#2563eb"></i> f(x)</span>
+          <span><i style="background:#f59e0b"></i> punto che si avvicina</span>
+          <span><i style="background:#9ca3af"></i> x = x₀</span>
+        </div>
+      </div>
+      <div class="ctrl-pane">
+        <div class="ctrl">
+          <label><span class="nm">vicinanza</span>
+            <input type="range" id="lcZoom" min="0" max="100" value="35" step="1">
+            <span class="v" id="lcZoomV">–</span></label>
+        </div>
+        <p class="hint">Più sposti il cursore a destra, più <span class="eqline">x</span> si avvicina a
+           <span class="eqline">x₀</span>.</p>
+        <div class="sl-tbls">
+          <table class="val-tbl" id="lcTblL"><caption>x → x₀⁻ (da sinistra)</caption></table>
+          <table class="val-tbl" id="lcTblR"><caption>x → x₀⁺ (da destra)</caption></table>
+        </div>
+        <div class="case-banner" id="lcCase"></div>
+        <div class="read">
+          <div class="it"><span class="l">Limite sinistro</span><span class="v m" id="lcL">–</span></div>
+          <div class="it"><span class="l">Limite destro</span><span class="v m" id="lcR">–</span></div>
+          <div class="it"><span class="l">Limite</span><span class="v m" id="lcLim">–</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-label">Prova tu</p>
+  <div class="card">
+    <div class="tabs" data-qgroup="lc">
+      <button class="tab active" data-qtab="lc_t">Teoria</button>
+      <button class="tab" data-qtab="lc_c">Calcolo</button>
+    </div>
+    <div class="quiz" data-quiz="lc_t"></div>
+    <div class="quiz" data-quiz="lc_c" hidden></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LIMITI · CALCOLO E FORME INDETERMINATE
+============================================================ -->
+<section class="scene" id="lim-calcolo">
+  <div class="page-head">
+    <h2>Calcolo dei limiti e forme indeterminate</h2>
+    <p class="lead">Come si calcola un limite: l'algebra dei limiti, le forme con l'infinito,
+       le sette forme indeterminate, le tecniche per risolverle e i limiti notevoli.</p>
+  </div>
+
+  <p class="sec-label">Teoria</p>
+  <div class="card">
+    <div class="accordion">
+
+      <details open>
+        <summary>L'algebra dei limiti</summary>
+        <div class="acc-body">
+          <p>Se <span class="eqline">f</span> e <span class="eqline">g</span> hanno limite
+             <strong>finito</strong> per <span class="eqline">x → x₀</span>, allora il limite si
+             «distribuisce» sulle operazioni:</p>
+          <div class="formula">lim (f ± g) = lim f ± lim g<br>
+            lim (f · g) = lim f · lim g<br>
+            lim (f / g) = lim f / lim g &nbsp;&nbsp;(se lim g ≠ 0)</div>
+          <p>In pratica, quando la funzione è «buona» (continua) nel punto, il limite si calcola
+             semplicemente <strong>sostituendo</strong> <span class="eqline">x₀</span>:</p>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→2</span></span> (x² + 3x − 1) = 4 + 6 − 1 = 9</div>
+          <div class="note-ok">La sostituzione diretta funziona sempre per polinomi e, più in generale,
+            per le funzioni continue nel punto. I problemi nascono solo quando compare un infinito
+            o una divisione per zero.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Le forme determinate con l'infinito</summary>
+        <div class="acc-body">
+          <p>Trattando <span class="eqline">∞</span> come «quantità illimitatamente grande»,
+             molte operazioni hanno esito certo (<strong>forme determinate</strong>):</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th>Operazione</th><th>Risultato</th><th>Operazione</th><th>Risultato</th></tr>
+            <tr><td class="m">k + ∞</td><td class="m">+∞</td><td class="m">k / ∞ &nbsp;(k finito)</td><td class="m">0</td></tr>
+            <tr><td class="m">∞ + ∞</td><td class="m">+∞</td><td class="m">∞ / k &nbsp;(k ≠ 0)</td><td class="m">∞</td></tr>
+            <tr><td class="m">k · ∞ &nbsp;(k &gt; 0)</td><td class="m">+∞</td><td class="m">k / 0⁺ &nbsp;(k &gt; 0)</td><td class="m">+∞</td></tr>
+            <tr><td class="m">∞ · ∞</td><td class="m">+∞</td><td class="m">+∞ · (−1)</td><td class="m">−∞</td></tr>
+          </table></div>
+          <div class="note-warn">Il <strong>segno</strong> va sempre seguito con cura, con la regola
+            dei segni: ad esempio <span class="eqline">(−2) · (+∞) = −∞</span>. E ricorda:
+            <span class="eqline">k / 0</span> dà infinito solo se <span class="eqline">k ≠ 0</span>,
+            studiando il segno con cui il denominatore tende a zero (<span class="eqline">0⁺</span> o
+            <span class="eqline">0⁻</span>).</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Le sette forme indeterminate</summary>
+        <div class="acc-body">
+          <p>In alcuni casi la sola struttura non basta a decidere il risultato: il limite
+             «dipende dai dettagli». Sono le <strong>forme indeterminate</strong> (o di
+             indecisione):</p>
+          <div class="formula center big"><span class="frac"><span class="nu">0</span><span class="de">0</span></span> &nbsp; <span class="frac"><span class="nu">∞</span><span class="de">∞</span></span> &nbsp; ∞ − ∞ &nbsp; 0 · ∞ &nbsp; 1<sup>∞</sup> &nbsp; 0<sup>0</sup> &nbsp; ∞<sup>0</sup></div>
+          <p>Una forma indeterminata <strong>non</strong> significa «il limite non esiste»: significa
+             che bisogna <em>lavorare</em> l'espressione (trasformarla in una forma equivalente) per
+             scoprire il risultato, che può essere un numero, infinito, oppure non esistere.</p>
+          <div class="note-key">Le due forme più frequenti al liceo sono <span class="eqline">0/0</span>
+            (rapporti che si annullano nello stesso punto) e <span class="eqline">∞/∞</span>
+            (rapporti tra quantità che divergono): a loro è dedicata la maggior parte delle tecniche.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Tecniche di risoluzione</summary>
+        <div class="acc-body">
+          <h3>Forma 0/0 con polinomi — scomposizione</h3>
+          <p>Se numeratore e denominatore si annullano in <span class="eqline">x₀</span>, allora
+             <span class="eqline">(x − x₀)</span> è fattore comune: si scompone e si
+             <strong>semplifica</strong>.</p>
+          <div class="formula"><span class="lim"><span class="lt">lim</span><span class="lb">x→2</span></span> <span class="frac"><span class="nu">x² − 4</span><span class="de">x − 2</span></span> = <span class="lim"><span class="lt">lim</span><span class="lb">x→2</span></span> <span class="frac"><span class="nu">(x − 2)(x + 2)</span><span class="de">x − 2</span></span> = <span class="lim"><span class="lt">lim</span><span class="lb">x→2</span></span> (x + 2) = 4</div>
+          <h3>Forma ∞/∞ con polinomi — confronto dei gradi</h3>
+          <p>Si raccoglie la potenza di grado massimo; conta solo il confronto fra i gradi:</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th>Gradi</th><th>Limite per x → ±∞</th></tr>
+            <tr><td>grado num &gt; grado den</td><td class="m">±∞</td></tr>
+            <tr><td>grado num &lt; grado den</td><td class="m">0</td></tr>
+            <tr><td>grado num = grado den</td><td class="m">rapporto dei coefficienti direttori</td></tr>
+          </table></div>
+          <h3>Forma ∞ − ∞ e 0 · ∞</h3>
+          <p>Si raccoglie il termine dominante, oppure si <strong>razionalizza</strong> (con le radici);
+             la forma <span class="eqline">0 · ∞</span> si riscrive come <span class="eqline">0/0</span>
+             o <span class="eqline">∞/∞</span>.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>I limiti notevoli</summary>
+        <div class="acc-body">
+          <p>Alcuni limiti fondamentali risolvono forme <span class="eqline">0/0</span> o
+             <span class="eqline">1<sup>∞</sup></span> e vanno conosciuti a memoria:</p>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">sin x</span><span class="de">x</span></span> = 1 &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">1 − cos x</span><span class="de">x²</span></span> = <span class="frac"><span class="nu">1</span><span class="de">2</span></span></div>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→±∞</span></span> <span class="frac"><span class="nu">(</span></span>1 + <span class="frac"><span class="nu">1</span><span class="de">x</span></span>)<sup>x</sup> = e &nbsp;&nbsp;&nbsp; <span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">e<sup>x</sup> − 1</span><span class="de">x</span></span> = 1</div>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→0</span></span> <span class="frac"><span class="nu">ln(1 + x)</span><span class="de">x</span></span> = 1</div>
+          <div class="note-ok">Il primo limite notevole, <span class="eqline">sin x / x → 1</span>,
+            dice che vicino a 0 il seno «assomiglia» a <span class="eqline">x</span>: per piccoli
+            angoli <span class="eqline">sin x ≈ x</span>. Da esso discende la derivata del seno.</div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <p class="sec-label">Simulazione · Le forme indeterminate</p>
+  <div class="card">
+    <p>Scegli un limite: la sostituzione diretta produce una <strong>forma indeterminata</strong>.
+       Osserva i passaggi che la risolvono, la conferma numerica e il grafico.</p>
+    <div class="fnpick" id="fiPick"></div>
+    <div class="eq-display" id="fiEq"></div>
+    <div class="case-banner cn" id="fiForm"></div>
+    <div class="sim-layout">
+      <div class="sim-pane">
+        <canvas class="plot" id="fiPlot" width="640" height="400" aria-label="Grafico del limite"></canvas>
+        <div class="legend">
+          <span><i style="background:#2563eb"></i> f(x)</span>
+          <span><i style="background:#10b981"></i> valore del limite</span>
+        </div>
+        <div class="sl-tbls" style="margin-top:.7rem">
+          <table class="val-tbl" id="fiTbl"></table>
+        </div>
+      </div>
+      <div class="ctrl-pane">
+        <div class="ctrl">
+          <label><span class="nm">vicinanza</span>
+            <input type="range" id="fiZoom" min="0" max="100" value="40" step="1">
+            <span class="v" id="fiZoomV">–</span></label>
+        </div>
+        <p class="strip-title">Risoluzione passo passo</p>
+        <div id="fiSteps"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-label">Prova tu</p>
+  <div class="card">
+    <div class="tabs" data-qgroup="fi">
+      <button class="tab active" data-qtab="fi_t">Teoria</button>
+      <button class="tab" data-qtab="fi_c">Calcolo</button>
+    </div>
+    <div class="quiz" data-quiz="fi_t"></div>
+    <div class="quiz" data-quiz="fi_c" hidden></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LIMITI · CONTINUITÀ E ASINTOTI
+============================================================ -->
+<section class="scene" id="lim-continuita">
+  <div class="page-head">
+    <h2>Continuità e asintoti</h2>
+    <p class="lead">La prima grande applicazione dei limiti: stabilire se una funzione è continua,
+       classificare le discontinuità e trovare gli asintoti che ne guidano il grafico.</p>
+  </div>
+
+  <p class="sec-label">Teoria</p>
+  <div class="card">
+    <div class="accordion">
+
+      <details open>
+        <summary>Funzioni continue in un punto</summary>
+        <div class="acc-body">
+          <p>Una funzione <span class="eqline">f</span> è <strong>continua</strong> nel punto
+             <span class="eqline">x₀</span> quando il limite esiste finito e coincide con il valore
+             della funzione:</p>
+          <div class="formula center big"><span class="lim"><span class="lt">lim</span><span class="lb">x→x₀</span></span> f(x) = f(x₀)</div>
+          <p>Devono valere <strong>tre condizioni</strong> contemporaneamente:</p>
+          <ol>
+            <li><span class="eqline">f(x₀)</span> esiste (cioè <span class="eqline">x₀</span> appartiene al dominio);</li>
+            <li>esiste finito <span class="eqline">lim<sub>x→x₀</sub> f(x)</span> (limiti laterali uguali);</li>
+            <li>i due valori coincidono.</li>
+          </ol>
+          <p>Una funzione è continua in un intervallo se lo è in ogni suo punto. Intuitivamente:
+             <strong>il grafico si traccia senza staccare la penna dal foglio.</strong></p>
+          <div class="note-ok">Polinomi, seno, coseno ed esponenziali sono continui ovunque.
+            Funzioni razionali, radici, tangente e logaritmo sono continue in tutto il loro dominio:
+            i problemi nascono solo ai bordi del dominio.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>I punti di discontinuità</summary>
+        <div class="acc-body">
+          <p>Dove la continuità si rompe, si classifica il punto in tre <strong>specie</strong>.</p>
+          <h3>Prima specie — salto</h3>
+          <p>I limiti laterali esistono <strong>finiti ma diversi</strong>: la funzione «salta».
+             L'ampiezza del salto è <span class="eqline">|ℓ₂ − ℓ₁|</span>.</p>
+          <div class="formula center">ℓ₁ = <span class="lim"><span class="lt">lim</span><span class="lb">x→x₀⁻</span></span> f ≠ <span class="lim"><span class="lt">lim</span><span class="lb">x→x₀⁺</span></span> f = ℓ₂ &nbsp;(entrambi finiti)</div>
+          <h3>Seconda specie</h3>
+          <p>Almeno uno dei limiti laterali è <strong>infinito</strong> oppure <strong>non esiste</strong>
+             (per esempio per oscillazione). È il caso tipico degli asintoti verticali.</p>
+          <h3>Terza specie — eliminabile</h3>
+          <p>Il limite esiste <strong>finito</strong>, ma la funzione in <span class="eqline">x₀</span> non
+             è definita oppure vale un numero diverso: un «buco» nel grafico. Si «ripara»
+             ridefinendo <span class="eqline">f(x₀)</span> uguale al limite.</p>
+          <div class="note-key">Memoria rapida: <strong>salto</strong> = laterali finiti diversi;
+            <strong>infinito/oscilla</strong> = seconda specie; <strong>buco</strong> = eliminabile.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Asintoti verticali</summary>
+        <div class="acc-body">
+          <p>La retta <span class="eqline">x = x₀</span> è un <strong>asintoto verticale</strong> se
+             almeno un limite laterale è infinito:</p>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→x₀</span></span> f(x) = ±∞</div>
+          <p>Per le funzioni razionali si cercano tra i valori che <strong>annullano il
+             denominatore</strong> (ma non il numeratore: se annullano entrambi, può essere una
+             discontinuità eliminabile). Esempio: <span class="eqline">f(x) = 1/(x − 1)</span> ha
+             asintoto verticale <span class="eqline">x = 1</span>, con <span class="eqline">−∞</span> a
+             sinistra e <span class="eqline">+∞</span> a destra.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Asintoti orizzontali e obliqui</summary>
+        <div class="acc-body">
+          <h3>Orizzontale</h3>
+          <p>Se per <span class="eqline">x → ±∞</span> la funzione tende a un valore finito
+             <span class="eqline">L</span>, la retta <span class="eqline">y = L</span> è un
+             <strong>asintoto orizzontale</strong>.</p>
+          <div class="formula center"><span class="lim"><span class="lt">lim</span><span class="lb">x→+∞</span></span> f(x) = L &nbsp;⇒&nbsp; y = L</div>
+          <h3>Obliquo</h3>
+          <p>Se <strong>non</strong> c'è asintoto orizzontale (la funzione diverge) ma il grafico si
+             avvicina a una retta <span class="eqline">y = mx + q</span>, questa è un
+             <strong>asintoto obliquo</strong>. Si trovano i due coefficienti con i limiti:</p>
+          <div class="formula center">m = <span class="lim"><span class="lt">lim</span><span class="lb">x→+∞</span></span> <span class="frac"><span class="nu">f(x)</span><span class="de">x</span></span> &nbsp;&nbsp;&nbsp; q = <span class="lim"><span class="lt">lim</span><span class="lb">x→+∞</span></span> [f(x) − mx]</div>
+          <div class="note-warn">L'asintoto obliquo esiste solo se <span class="eqline">m</span> è
+            <strong>finito e diverso da zero</strong> e <span class="eqline">q</span> è finito.
+            Su uno stesso lato non possono coesistere asintoto orizzontale e obliquo. Nelle funzioni
+            razionali l'asintoto obliquo c'è quando il grado del numeratore supera di <strong>uno</strong>
+            quello del denominatore.</div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <p class="sec-label">Simulazione · Continuità e asintoti</p>
+  <div class="card">
+    <p>Scegli una funzione: il grafico mostra i suoi <strong>asintoti</strong> tratteggiati. Muovi il
+       <strong>punto di ispezione</strong> <span class="eqline">x₀</span> e leggi i limiti laterali per
+       capire se la funzione è continua o quale discontinuità presenta.</p>
+    <div class="fnpick" id="caPick"></div>
+    <div class="eq-display" id="caEq"></div>
+    <div class="sim-layout">
+      <div class="sim-pane">
+        <canvas class="plot" id="caPlot" width="640" height="400" aria-label="Grafico con asintoti"></canvas>
+        <div class="legend">
+          <span><i style="background:#2563eb"></i> f(x)</span>
+          <span><i style="background:#ef4444"></i> asintoto verticale</span>
+          <span><i style="background:#7c3aed"></i> asintoto orizz./obliquo</span>
+          <span><i style="background:#f59e0b"></i> x₀</span>
+        </div>
+      </div>
+      <div class="ctrl-pane">
+        <div class="ctrl">
+          <label><span class="nm">x₀</span>
+            <input type="range" id="caX0" min="-5" max="5" value="1" step="0.25">
+            <span class="v" id="caX0V">–</span></label>
+        </div>
+        <div class="read">
+          <div class="it"><span class="l">f(x₀⁻)</span><span class="v m" id="caL">–</span></div>
+          <div class="it"><span class="l">f(x₀⁺)</span><span class="v m" id="caR">–</span></div>
+          <div class="it"><span class="l">f(x₀)</span><span class="v m" id="caV">–</span></div>
+        </div>
+        <div class="case-banner" id="caVerdict"></div>
+        <p class="strip-title">Asintoti della funzione</p>
+        <div id="caAsy"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-label">Prova tu</p>
+  <div class="card">
+    <div class="tabs" data-qgroup="ca">
+      <button class="tab active" data-qtab="ca_t">Teoria</button>
+      <button class="tab" data-qtab="ca_c">Calcolo</button>
+    </div>
+    <div class="quiz" data-quiz="ca_t"></div>
+    <div class="quiz" data-quiz="ca_c" hidden></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DERIVATE · DERIVATA E RETTA TANGENTE
+============================================================ -->
+<section class="scene" id="der-definizione">
+  <div class="page-head deriv">
+    <h2>La derivata e la retta tangente</h2>
+    <p class="lead">Il rapporto incrementale, la definizione di derivata come limite, il suo significato
+       geometrico (pendenza della tangente) e fisico (velocità di variazione).</p>
+  </div>
+
+  <p class="sec-label">Teoria</p>
+  <div class="card">
+    <div class="accordion">
+
+      <details open>
+        <summary>Dal problema della tangente al rapporto incrementale</summary>
+        <div class="acc-body">
+          <p>Data una funzione e un punto <span class="eqline">P = (x₀, f(x₀))</span>, vogliamo la
+             pendenza della retta <strong>tangente</strong> al grafico in <span class="eqline">P</span>.
+             Partiamo da un secondo punto <span class="eqline">Q = (x₀ + h, f(x₀ + h))</span> e
+             tracciamo la <strong>secante</strong> <span class="eqline">PQ</span>. La sua pendenza è il
+             <strong>rapporto incrementale</strong>:</p>
+          <div class="formula center big">m<sub>sec</sub> = <span class="frac"><span class="nu">Δy</span><span class="de">Δx</span></span> = <span class="frac"><span class="nu">f(x₀ + h) − f(x₀)</span><span class="de">h</span></span></div>
+          <p>Esso misura la <strong>variazione media</strong> di <span class="eqline">f</span> tra
+             <span class="eqline">x₀</span> e <span class="eqline">x₀ + h</span>. L'idea geniale:
+             facciamo <strong>scivolare <span class="eqline">Q</span> verso <span class="eqline">P</span></strong>
+             (cioè <span class="eqline">h → 0</span>) e guardiamo verso quale pendenza tende la secante.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>La definizione di derivata</summary>
+        <div class="acc-body">
+          <p>La <strong>derivata</strong> di <span class="eqline">f</span> in <span class="eqline">x₀</span>
+             è il limite del rapporto incrementale per <span class="eqline">h → 0</span>, quando esiste
+             finito:</p>
+          <div class="formula center big violet">f '(x₀) = <span class="lim"><span class="lt">lim</span><span class="lb">h→0</span></span> <span class="frac"><span class="nu">f(x₀ + h) − f(x₀)</span><span class="de">h</span></span></div>
+          <p>È una forma <span class="eqline">0/0</span> (numeratore e denominatore tendono entrambi a 0):
+             la derivata è proprio il numero che questa forma indeterminata nasconde. Si indica in più modi:</p>
+          <div class="formula center">f '(x₀) &nbsp;=&nbsp; y' &nbsp;=&nbsp; <span class="frac"><span class="nu">df</span><span class="de">dx</span></span> &nbsp;=&nbsp; Df(x₀)</div>
+          <p>Esempio con <span class="eqline">f(x) = x²</span> in <span class="eqline">x₀</span>:</p>
+          <div class="formula">f '(x₀) = <span class="lim"><span class="lt">lim</span><span class="lb">h→0</span></span> <span class="frac"><span class="nu">(x₀ + h)² − x₀²</span><span class="de">h</span></span> = <span class="lim"><span class="lt">lim</span><span class="lb">h→0</span></span> <span class="frac"><span class="nu">2x₀h + h²</span><span class="de">h</span></span> = <span class="lim"><span class="lt">lim</span><span class="lb">h→0</span></span> (2x₀ + h) = 2x₀</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Il significato geometrico: la retta tangente</summary>
+        <div class="acc-body">
+          <p>Quando <span class="eqline">h → 0</span> il punto <span class="eqline">Q</span> si fonde con
+             <span class="eqline">P</span> e la secante diventa la <strong>tangente</strong>. Perciò:</p>
+          <div class="note-key"><strong>La derivata <span class="eqline">f '(x₀)</span> è il coefficiente
+            angolare della retta tangente</strong> al grafico nel punto di ascissa <span class="eqline">x₀</span>.</div>
+          <p>L'equazione della retta tangente in <span class="eqline">P = (x₀, f(x₀))</span> è quindi:</p>
+          <div class="formula center big">y = f(x₀) + f '(x₀)·(x − x₀)</div>
+          <ul>
+            <li><span class="eqline">f '(x₀) &gt; 0</span>: tangente in salita, funzione crescente;</li>
+            <li><span class="eqline">f '(x₀) &lt; 0</span>: tangente in discesa, funzione decrescente;</li>
+            <li><span class="eqline">f '(x₀) = 0</span>: tangente orizzontale (possibile massimo o minimo).</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>Derivabilità e continuità</summary>
+        <div class="acc-body">
+          <div class="note-key">Se <span class="eqline">f</span> è <strong>derivabile</strong> in
+            <span class="eqline">x₀</span>, allora è anche <strong>continua</strong> in
+            <span class="eqline">x₀</span>. Il viceversa è falso!</div>
+          <p>Una funzione continua può non essere derivabile: la tangente potrebbe non essere unica o
+             essere verticale. I punti di <strong>non derivabilità</strong> sono:</p>
+          <ul>
+            <li><strong>punto angoloso</strong>: derivate laterali finite ma diverse (es.
+                <span class="eqline">|x|</span> in 0: −1 a sinistra, +1 a destra);</li>
+            <li><strong>cuspide</strong>: derivate laterali infinite di segno opposto
+                (<span class="eqline">+∞</span> e <span class="eqline">−∞</span>);</li>
+            <li><strong>flesso a tangente verticale</strong>: derivate laterali entrambe infinite
+                con lo stesso segno.</li>
+          </ul>
+          <div class="note-warn">Negli spigoli e nelle cuspidi non esiste un'unica retta tangente: lì
+            la derivata non è definita, pur essendo la funzione continua.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Il significato fisico: velocità di variazione</summary>
+        <div class="acc-body">
+          <p>Il rapporto incrementale è una <strong>variazione media</strong>; la derivata è la
+             <strong>variazione istantanea</strong>. In fisica, se <span class="eqline">s(t)</span> è la
+             posizione nel tempo:</p>
+          <div class="formula center">velocità istantanea: &nbsp; v(t) = s '(t) &nbsp;&nbsp;&nbsp; accelerazione: &nbsp; a(t) = v '(t) = s ''(t)</div>
+          <p>Più in generale la derivata è il <strong>tasso di variazione</strong> di una grandezza
+             rispetto a un'altra: velocità di una reazione, ritmo di crescita di una popolazione,
+             costo marginale in economia. Ovunque qualcosa cambia, la derivata ne misura la rapidità.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <p class="sec-label">Simulazione · Dalla secante alla tangente</p>
+  <div class="card">
+    <p>Scegli la funzione e il punto <span class="eqline">x₀</span>. Riduci l'incremento
+       <span class="eqline">h</span> (o premi <em>Anima</em>): la <strong>secante arancione</strong> ruota
+       fino a coincidere con la <strong>tangente viola</strong>, e il rapporto incrementale tende a
+       <span class="eqline">f '(x₀)</span>.</p>
+    <div class="fnpick" id="dtPick"></div>
+    <div class="sim-layout">
+      <div class="sim-pane">
+        <canvas class="plot" id="dtPlot" width="640" height="400" aria-label="Secante e tangente"></canvas>
+        <div class="legend">
+          <span><i style="background:#2563eb"></i> f(x)</span>
+          <span><i style="background:#f59e0b"></i> secante PQ</span>
+          <span><i style="background:#7c3aed"></i> tangente in P</span>
+        </div>
+      </div>
+      <div class="ctrl-pane">
+        <div class="ctrl">
+          <label><span class="nm">x₀</span>
+            <input type="range" id="dtX0" min="-4" max="4" value="1" step="0.1">
+            <span class="v" id="dtX0V">–</span></label>
+          <label><span class="nm">h</span>
+            <input type="range" id="dtH" min="-30" max="30" value="20" step="1">
+            <span class="v" id="dtHV">–</span></label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-accent" id="dtAnim">▶ Anima h → 0</button>
+        </div>
+        <div class="read">
+          <div class="it"><span class="l">Rapp. increm. (secante)</span><span class="v" id="dtRI">–</span></div>
+          <div class="it"><span class="l">f '(x₀) (tangente)</span><span class="v" id="dtDer">–</span></div>
+        </div>
+        <p class="strip-title">Retta tangente in P</p>
+        <div class="formula center" id="dtTan" style="font-size:1.05em">–</div>
+        <p class="hint" id="dtNote"></p>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-label">Prova tu</p>
+  <div class="card">
+    <div class="tabs" data-qgroup="dt">
+      <button class="tab active" data-qtab="dt_t">Teoria</button>
+      <button class="tab" data-qtab="dt_c">Calcolo</button>
+    </div>
+    <div class="quiz" data-quiz="dt_t"></div>
+    <div class="quiz" data-quiz="dt_c" hidden></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DERIVATE · REGOLE DI DERIVAZIONE
+============================================================ -->
+<section class="scene" id="der-regole">
+  <div class="page-head deriv">
+    <h2>Le regole di derivazione</h2>
+    <p class="lead">Le derivate delle funzioni elementari e le regole per combinarle: somma, prodotto,
+       quoziente e funzione composta. Strumenti per derivare qualsiasi funzione senza tornare al limite.</p>
+  </div>
+
+  <p class="sec-label">Teoria</p>
+  <div class="card">
+    <div class="accordion">
+
+      <details open>
+        <summary>Le derivate fondamentali</summary>
+        <div class="acc-body">
+          <p>Calcolate una volta per tutte con la definizione, si usano come «mattoni»:</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th>f(x)</th><th>f '(x)</th><th>f(x)</th><th>f '(x)</th></tr>
+            <tr><td class="m">k (costante)</td><td class="m">0</td><td class="m">sin x</td><td class="m">cos x</td></tr>
+            <tr><td class="m">x</td><td class="m">1</td><td class="m">cos x</td><td class="m">−sin x</td></tr>
+            <tr><td class="m">x<sup>n</sup></td><td class="m">n·x<sup>n−1</sup></td><td class="m">tan x</td><td class="m">1 / cos²x</td></tr>
+            <tr><td class="m">√x</td><td class="m">1 / (2√x)</td><td class="m">e<sup>x</sup></td><td class="m">e<sup>x</sup></td></tr>
+            <tr><td class="m">1 / x</td><td class="m">−1 / x²</td><td class="m">a<sup>x</sup></td><td class="m">a<sup>x</sup>·ln a</td></tr>
+            <tr><td class="m">ln x</td><td class="m">1 / x</td><td class="m">log<sub>a</sub> x</td><td class="m">1 / (x·ln a)</td></tr>
+          </table></div>
+          <div class="note-ok">La regola della potenza <span class="eqline">D[x<sup>n</sup>] = n·x<sup>n−1</sup></span>
+            vale per <strong>ogni</strong> esponente reale: ad esempio
+            <span class="eqline">D[√x] = D[x<sup>1/2</sup>] = ½·x<sup>−1/2</sup> = 1/(2√x)</span>.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Linearità: somma, differenza e costante</summary>
+        <div class="acc-body">
+          <p>La derivata «entra» nelle somme e rispetta i fattori costanti:</p>
+          <div class="formula center big">(f ± g)' = f ' ± g ' &nbsp;&nbsp;&nbsp; (k·f)' = k·f '</div>
+          <p>Quindi un polinomio si deriva termine a termine:</p>
+          <div class="formula">D[3x⁴ − 5x² + 2x − 7] = 12x³ − 10x + 2</div>
+          <p class="hint">La derivata di una costante è 0: il termine noto «sparisce» sempre.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>La regola del prodotto</summary>
+        <div class="acc-body">
+          <p>La derivata di un prodotto <strong>non</strong> è il prodotto delle derivate:</p>
+          <div class="formula center big">(f·g)' = f '·g + f·g '</div>
+          <p>«derivata del primo per il secondo, più il primo per la derivata del secondo».
+             Esempio con <span class="eqline">x²·sin x</span>:</p>
+          <div class="formula">D[x²·sin x] = 2x·sin x + x²·cos x</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>La regola del quoziente</summary>
+        <div class="acc-body">
+          <p>Per il rapporto di due funzioni:</p>
+          <div class="formula center big">(<span class="frac"><span class="nu">f</span><span class="de">g</span></span>)' = <span class="frac"><span class="nu">f '·g − f·g '</span><span class="de">g²</span></span></div>
+          <p>«derivata del numeratore per il denominatore, meno il numeratore per la derivata del
+             denominatore, tutto diviso il denominatore al quadrato». Esempio:</p>
+          <div class="formula">D[<span class="frac"><span class="nu">x</span><span class="de">x + 1</span></span>] = <span class="frac"><span class="nu">1·(x + 1) − x·1</span><span class="de">(x + 1)²</span></span> = <span class="frac"><span class="nu">1</span><span class="de">(x + 1)²</span></span></div>
+          <div class="note-warn">Attenzione all'ordine al numeratore: c'è un <strong>meno</strong> e
+            l'ordine dei termini conta. Da qui si ricava anche
+            <span class="eqline">D[tan x] = 1/cos²x</span>.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>La funzione composta: la regola della catena</summary>
+        <div class="acc-body">
+          <p>Per una funzione «dentro l'altra» <span class="eqline">y = f(g(x))</span> si deriva
+             «da fuori verso dentro», moltiplicando per la derivata interna:</p>
+          <div class="formula center big">D[f(g(x))] = f '(g(x))·g '(x)</div>
+          <p>È lo strumento più potente. Esempi:</p>
+          <div class="formula">D[sin(3x)] = cos(3x)·3 = 3·cos(3x)<br>
+            D[(x² + 1)⁵] = 5(x² + 1)⁴·2x = 10x·(x² + 1)⁴<br>
+            D[e<sup>−x²</sup>] = e<sup>−x²</sup>·(−2x) = −2x·e<sup>−x²</sup></div>
+          <div class="note-key">La «derivata interna» <span class="eqline">g '(x)</span> è il fattore che
+            si dimentica più spesso: è il cuore della regola della catena.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Derivate di ordine superiore</summary>
+        <div class="acc-body">
+          <p>Derivando ancora la derivata si ottengono le derivate successive, utili nello studio di
+             funzione e in fisica:</p>
+          <div class="formula center">f ' → f '' → f ''' → … <span class="why">prima, seconda, terza derivata…</span></div>
+          <p>Esempio con <span class="eqline">f(x) = x⁴</span>:
+             <span class="eqline">f ' = 4x³</span>, <span class="eqline">f '' = 12x²</span>,
+             <span class="eqline">f ''' = 24x</span>. La derivata seconda
+             <span class="eqline">f ''</span> governa la <strong>concavità</strong>.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <p class="sec-label">Simulazione · La funzione e la sua derivata</p>
+  <div class="card">
+    <p>Scegli la funzione: il grafico mostra <span class="eqline">f</span> (blu) e la sua derivata
+       <span class="eqline">f '</span> (viola). Muovi <span class="eqline">x₀</span> e osserva come il
+       <strong>segno di <span class="eqline">f '</span></strong> indica se <span class="eqline">f</span>
+       cresce o decresce, e come <strong><span class="eqline">f ' = 0</span></strong> corrisponde a una
+       tangente orizzontale.</p>
+    <div class="fnpick" id="drPick"></div>
+    <div class="eq-display violet" id="drEq"></div>
+    <div class="sim-layout">
+      <div class="sim-pane">
+        <canvas class="plot" id="drPlot" width="640" height="400" aria-label="Funzione e derivata"></canvas>
+        <div class="legend">
+          <span><i style="background:#2563eb"></i> f(x)</span>
+          <span><i style="background:#7c3aed"></i> f '(x)</span>
+          <span><i style="background:#f59e0b"></i> tangente in x₀</span>
+        </div>
+      </div>
+      <div class="ctrl-pane">
+        <div class="ctrl">
+          <label><span class="nm">x₀</span>
+            <input type="range" id="drX0" min="-4" max="4" value="0.8" step="0.1">
+            <span class="v" id="drX0V">–</span></label>
+        </div>
+        <div class="read">
+          <div class="it"><span class="l">f(x₀)</span><span class="v" id="drFx">–</span></div>
+          <div class="it"><span class="l">f '(x₀) = pendenza</span><span class="v" id="drDx">–</span></div>
+        </div>
+        <div class="case-banner" id="drMono"></div>
+        <p class="strip-title">Espressione della derivata</p>
+        <div class="formula violet center" id="drFormula" style="font-size:1.05em">–</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-label">Prova tu</p>
+  <div class="card">
+    <div class="tabs" data-qgroup="dr">
+      <button class="tab active" data-qtab="dr_t">Teoria</button>
+      <button class="tab" data-qtab="dr_c">Calcolo</button>
+    </div>
+    <div class="quiz" data-quiz="dr_t"></div>
+    <div class="quiz" data-quiz="dr_c" hidden></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DERIVATE · STUDIO DI FUNZIONE
+============================================================ -->
+<section class="scene" id="der-studio">
+  <div class="page-head deriv">
+    <h2>Le applicazioni: lo studio di funzione</h2>
+    <p class="lead">La derivata al lavoro: crescenza e decrescenza, massimi e minimi, concavità e flessi,
+       fino ai problemi di ottimizzazione. È qui che l'analisi disegna il grafico.</p>
+  </div>
+
+  <p class="sec-label">Teoria</p>
+  <div class="card">
+    <div class="accordion">
+
+      <details open>
+        <summary>Segno della derivata prima e monotonia</summary>
+        <div class="acc-body">
+          <p>Poiché <span class="eqline">f '(x)</span> è la pendenza della tangente, il suo segno dice
+             se la funzione sale o scende:</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th>In un intervallo</th><th>La funzione è…</th></tr>
+            <tr><td class="m">f '(x) &gt; 0</td><td><strong>crescente</strong> ↗</td></tr>
+            <tr><td class="m">f '(x) &lt; 0</td><td><strong>decrescente</strong> ↘</td></tr>
+            <tr><td class="m">f '(x) = 0</td><td>tangente orizzontale (punto stazionario)</td></tr>
+          </table></div>
+          <div class="note-key">Studiare il <strong>segno di <span class="eqline">f '</span></strong> è il
+            passo che rivela dove la funzione cresce e dove decresce: si risolve la disequazione
+            <span class="eqline">f '(x) &gt; 0</span>.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Massimi e minimi relativi</summary>
+        <div class="acc-body">
+          <p>Nei punti dove <span class="eqline">f '</span> si annulla <em>e cambia segno</em> si hanno
+             gli estremi relativi (<strong>teorema di Fermat</strong>: in un estremo interno
+             <span class="eqline">f ' = 0</span>):</p>
+          <ul>
+            <li><strong>massimo relativo</strong>: <span class="eqline">f '</span> passa da
+                <span class="eqline">+</span> a <span class="eqline">−</span> (sale poi scende);</li>
+            <li><strong>minimo relativo</strong>: <span class="eqline">f '</span> passa da
+                <span class="eqline">−</span> a <span class="eqline">+</span> (scende poi sale).</li>
+          </ul>
+          <p>In alternativa si usa la <strong>derivata seconda</strong> nel punto stazionario
+             <span class="eqline">x₀</span> (dove <span class="eqline">f '(x₀)=0</span>):</p>
+          <div class="formula center">f ''(x₀) &lt; 0 ⇒ massimo &nbsp;&nbsp;&nbsp; f ''(x₀) &gt; 0 ⇒ minimo</div>
+          <div class="note-warn">Se <span class="eqline">f '</span> si annulla ma <strong>non</strong> cambia
+            segno, non c'è estremo: è un <strong>flesso a tangente orizzontale</strong>
+            (come <span class="eqline">x³</span> in 0).</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Concavità e flessi (derivata seconda)</summary>
+        <div class="acc-body">
+          <p>La derivata seconda <span class="eqline">f ''</span> misura come cambia la pendenza,
+             cioè la <strong>concavità</strong>:</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <tr><th>In un intervallo</th><th>Concavità</th></tr>
+            <tr><td class="m">f ''(x) &gt; 0</td><td>rivolta verso l'<strong>alto</strong> ∪ (convessa)</td></tr>
+            <tr><td class="m">f ''(x) &lt; 0</td><td>rivolta verso il <strong>basso</strong> ∩ (concava)</td></tr>
+          </table></div>
+          <p>Un <strong>punto di flesso</strong> è dove la concavità cambia: lì
+             <span class="eqline">f ''</span> si annulla cambiando segno.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Lo schema dello studio di funzione</summary>
+        <div class="acc-body">
+          <p>Per disegnare il grafico di una funzione si seguono, nell'ordine, questi passi:</p>
+          <ol>
+            <li><strong>Dominio</strong> e eventuali <strong>simmetrie</strong> (pari/dispari);</li>
+            <li><strong>Intersezioni</strong> con gli assi e <strong>segno</strong> di <span class="eqline">f</span>;</li>
+            <li><strong>Limiti</strong> agli estremi del dominio e <strong>asintoti</strong>;</li>
+            <li><strong>Derivata prima</strong>: monotonia, massimi e minimi;</li>
+            <li><strong>Derivata seconda</strong>: concavità e flessi;</li>
+            <li>si raccolgono i dati e si traccia il <strong>grafico</strong>.</li>
+          </ol>
+          <div class="note-ok">I limiti danno la «cornice» (gli asintoti), le derivate danno la «forma»
+            (salite, discese, gobbe e flessi): insieme determinano il grafico.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Problemi di ottimizzazione</summary>
+        <div class="acc-body">
+          <p>Molti problemi reali chiedono di rendere <strong>massima</strong> o <strong>minima</strong>
+             una grandezza: area, volume, costo, percorso. Lo schema è sempre lo stesso:</p>
+          <ol>
+            <li>esprimi la grandezza da ottimizzare come <strong>funzione</strong> di una variabile;</li>
+            <li>individua il <strong>dominio</strong> (vincoli del problema);</li>
+            <li>poni <span class="eqline">f '(x) = 0</span> e trova i punti stazionari;</li>
+            <li>verifica con il segno di <span class="eqline">f '</span> (o di <span class="eqline">f ''</span>)
+                che sia il massimo/minimo cercato.</li>
+          </ol>
+          <p class="hint">Esempio classico: tra tutti i rettangoli di perimetro fissato, il
+             <strong>quadrato</strong> ha area massima — e lo si dimostra annullando la derivata
+             della funzione area.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+  <p class="sec-label">Simulazione · Studio con la derivata</p>
+  <div class="card">
+    <p>Scegli la funzione: l'app calcola <span class="eqline">f '</span> e <span class="eqline">f ''</span>,
+       segna <strong>massimi</strong> (verde), <strong>minimi</strong> (rosso) e <strong>flessi</strong>
+       (viola), e costruisce la <strong>striscia dei segni</strong> di <span class="eqline">f '</span>.</p>
+    <div class="fnpick" id="sfPick"></div>
+    <div class="eq-display violet" id="sfEq"></div>
+    <div class="sim-layout">
+      <div class="sim-pane">
+        <canvas class="plot" id="sfPlot" width="640" height="400" aria-label="Studio di funzione"></canvas>
+        <div class="legend">
+          <span><i style="background:#2563eb"></i> f(x)</span>
+          <span><i style="background:#10b981"></i> massimo</span>
+          <span><i style="background:#ef4444"></i> minimo</span>
+          <span><i style="background:#7c3aed"></i> flesso</span>
+        </div>
+        <p class="strip-title">Segno di f '(x) e monotonia</p>
+        <div class="sign-strip" id="sfStrip"></div>
+      </div>
+      <div class="ctrl-pane">
+        <p class="strip-title">Derivate</p>
+        <div class="formula violet center" id="sfFp" style="font-size:1.02em">–</div>
+        <div class="formula violet center" id="sfFpp" style="font-size:1.02em">–</div>
+        <p class="strip-title">Punti notevoli</p>
+        <div id="sfInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-label">Prova tu</p>
+  <div class="card">
+    <div class="tabs" data-qgroup="sf">
+      <button class="tab active" data-qtab="sf_t">Teoria</button>
+      <button class="tab" data-qtab="sf_c">Calcolo</button>
+    </div>
+    <div class="quiz" data-quiz="sf_t"></div>
+    <div class="quiz" data-quiz="sf_c" hidden></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Limiti e derivate · App didattica di analisi matematica per il triennio della scuola
+  secondaria di secondo grado. Tutto in un unico file, senza dipendenze esterne.
+</footer>
+
+<script>
+'use strict';
+/* ================================================================
+   Limiti e derivate · navigazione, quiz, grafici, simulazioni
+   ================================================================ */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const ri=n=>Math.floor(Math.random()*n);
+const PI=Math.PI;
+
+/* ---------------- Formattazione numerica ---------------- */
+function fmt(x,d=2){
+  if(x===Infinity)return'+∞';
+  if(x===-Infinity)return'−∞';
+  if(!isFinite(x)||Number.isNaN(x))return'non def.';
+  let r=Math.round(x*10**d)/10**d;
+  if(Object.is(r,-0))r=0;
+  let s=r.toFixed(d);
+  if(s.indexOf('.')>=0)s=s.replace(/0+$/,'').replace(/\.$/,'');
+  return s.replace('.',',').replace('-','−');
+}
+function fmtSign(x,d=2){const s=fmt(x,d);return(x>=0&&isFinite(x))?'+'+s:s;}
+
+/* ---------------- Navigazione ---------------- */
+const navBtns=$$('#mainNav button');
+function show(id){
+  $$('.scene').forEach(s=>s.classList.toggle('active',s.id===id));
+  navBtns.forEach(b=>b.classList.toggle('active',b.dataset.target===id));
+  if(location.hash!=='#'+id)history.replaceState(null,'','#'+id);
+  window.scrollTo(0,0);
+  requestAnimationFrame(redrawVisible);
+}
+navBtns.forEach(b=>b.addEventListener('click',()=>show(b.dataset.target)));
+$$('.home-card').forEach(b=>b.addEventListener('click',()=>show(b.dataset.target)));
+window.addEventListener('hashchange',()=>{
+  const id=location.hash.slice(1);
+  if(document.getElementById(id))show(id);
+});
+
+/* ---------------- Tabs quiz (Teoria / Calcolo) ---------------- */
+$$('.tabs[data-qgroup]').forEach(tb=>{
+  tb.addEventListener('click',e=>{
+    const btn=e.target.closest('.tab');if(!btn)return;
+    tb.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===btn));
+    const card=tb.closest('.card');
+    card.querySelectorAll('.quiz').forEach(qz=>{qz.hidden=qz.dataset.quiz!==btn.dataset.qtab});
+  });
+});
+
+/* ---------------- Motore quiz ---------------- */
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=ri(i+1);const t=a[i];a[i]=a[j];a[j]=t}
+  return a;
+}
+function initQuiz(el){
+  const data=QUIZZES[el.dataset.quiz];
+  if(!data)return;
+  let i=0,score=0,order=null;
+  function qHTML(){
+    const q=data[i];
+    order=shuffled(q.opts.map((t,ix)=>({t,ix})));
+    el.innerHTML=
+      '<div class="quiz-hd"><span>Domanda '+(i+1)+' di '+data.length+'</span>'+
+      '<span class="score">Punteggio: '+score+'</span></div>'+
+      '<div class="quiz-bar"><i style="width:'+(i/data.length*100)+'%"></i></div>'+
+      '<p class="quiz-q">'+q.q+'</p>'+
+      '<div class="quiz-opts">'+order.map((o,k)=>
+        '<button class="quiz-btn" data-k="'+k+'">'+o.t+'</button>').join('')+'</div>'+
+      '<div class="quiz-ft"></div>';
+    el.querySelectorAll('.quiz-btn').forEach(b=>
+      b.addEventListener('click',()=>answer(+b.dataset.k)));
+  }
+  function answer(k){
+    const q=data[i],right=order[k].ix===q.ans;
+    if(right)score++;
+    el.querySelectorAll('.quiz-btn').forEach((b,j)=>{
+      b.disabled=true;
+      if(order[j].ix===q.ans)b.classList.add('correct');
+      else if(j===k)b.classList.add('wrong');
+    });
+    el.querySelector('.quiz-hd .score').textContent='Punteggio: '+score;
+    el.querySelector('.quiz-bar i').style.width=((i+1)/data.length*100)+'%';
+    const ft=el.querySelector('.quiz-ft');
+    ft.innerHTML='<div class="quiz-exp '+(right?'ok':'no')+'"><strong>'+
+      (right?'Esatto.':'Non è corretto.')+'</strong> '+q.exp+'</div>'+
+      '<button class="btn btn-primary quiz-next">'+
+      (i<data.length-1?'Avanti':'Vedi il risultato')+'</button>';
+    ft.querySelector('.quiz-next').addEventListener('click',()=>{
+      i++;if(i<data.length)qHTML();else end();
+    });
+  }
+  function end(){
+    const pct=score/data.length;
+    const msg=pct>=0.9?'Eccellente: padroneggi l’argomento.':
+      pct>=0.7?'Molto bene: ancora un piccolo sforzo per la perfezione.':
+      pct>=0.5?'Sufficiente: rileggi le spiegazioni degli errori e riprova.':
+      'Riparti dalla teoria e dalla simulazione, poi riprova il quiz.';
+    el.innerHTML='<div class="quiz-end"><div class="big">'+score+' / '+data.length+
+      '</div><p>'+msg+'</p><button class="btn btn-primary">Ricomincia</button></div>';
+    el.querySelector('button').addEventListener('click',()=>{i=0;score=0;qHTML()});
+  }
+  qHTML();
+}
+
+/* ---------------- Grafici su canvas ---------------- */
+function niceStep(v){
+  const p=Math.pow(10,Math.floor(Math.log10(v)));const m=v/p;
+  return(m<1.5?1:m<3.5?2:m<7.5?5:10)*p;
+}
+class Plot{
+  constructor(c){this.c=c;this.g=c.getContext('2d');this.w=640;this.h=400;
+    this.x1=-10;this.x2=10;this.y1=-10;this.y2=10}
+  fit(){
+    const w=this.c.clientWidth||640;
+    const h=Math.max(250,Math.min(420,Math.round(w*0.66)));
+    const r=window.devicePixelRatio||1;
+    this.c.width=Math.round(w*r);this.c.height=Math.round(h*r);
+    this.c.style.height=h+'px';
+    this.g.setTransform(r,0,0,r,0,0);
+    this.w=w;this.h=h;
+  }
+  view(x1,x2,y1,y2){this.x1=x1;this.x2=x2;this.y1=y1;this.y2=y2}
+  X(x){return(x-this.x1)/(this.x2-this.x1)*this.w}
+  Y(y){return this.h-(y-this.y1)/(this.y2-this.y1)*this.h}
+  ix(px){return this.x1+px/this.w*(this.x2-this.x1)}
+  axes(){
+    const g=this.g;
+    g.clearRect(0,0,this.w,this.h);
+    const sx=niceStep((this.x2-this.x1)/9),sy=niceStep((this.y2-this.y1)/7);
+    g.lineWidth=1;g.strokeStyle='#eef1f6';
+    g.beginPath();
+    for(let x=Math.ceil(this.x1/sx)*sx;x<=this.x2+1e-9;x+=sx){
+      const px=this.X(x);g.moveTo(px,0);g.lineTo(px,this.h);
+    }
+    for(let y=Math.ceil(this.y1/sy)*sy;y<=this.y2+1e-9;y+=sy){
+      const py=this.Y(y);g.moveTo(0,py);g.lineTo(this.w,py);
+    }
+    g.stroke();
+    const y0=this.Y(0),x0=this.X(0);
+    g.strokeStyle='#9ca3af';g.lineWidth=1.4;
+    g.beginPath();
+    if(y0>=0&&y0<=this.h){g.moveTo(0,y0);g.lineTo(this.w,y0);
+      g.moveTo(this.w-8,y0-4);g.lineTo(this.w,y0);g.lineTo(this.w-8,y0+4);}
+    if(x0>=0&&x0<=this.w){g.moveTo(x0,this.h);g.lineTo(x0,0);
+      g.moveTo(x0-4,8);g.lineTo(x0,0);g.lineTo(x0+4,8);}
+    g.stroke();
+    g.font='10.5px Inter,Roboto,system-ui,sans-serif';g.fillStyle='#9ca3af';
+    g.textAlign='center';
+    const ty=Math.min(Math.max(y0+13,12),this.h-4);
+    for(let x=Math.ceil(this.x1/sx)*sx;x<=this.x2+1e-9;x+=sx){
+      if(Math.abs(x)<sx/2)continue;
+      g.fillText(fmt(x,2),this.X(x),ty);
+    }
+    g.textAlign='left';
+    const tx=Math.min(Math.max(x0+5,3),this.w-30);
+    for(let y=Math.ceil(this.y1/sy)*sy;y<=this.y2+1e-9;y+=sy){
+      if(Math.abs(y)<sy/2)continue;
+      g.fillText(fmt(y,2),tx,this.Y(y)-3);
+    }
+  }
+  plotFn(f,color,width,dash){
+    const g=this.g;g.save();
+    g.strokeStyle=color;g.lineWidth=width||2.6;g.lineJoin='round';
+    if(dash)g.setLineDash(dash);
+    g.beginPath();let pen=false,prevpy=0;
+    for(let px=0;px<=this.w;px+=1.5){
+      const y=f(this.ix(px));
+      if(!isFinite(y)||Math.abs(y)>1e7){pen=false;continue}
+      const py=this.Y(y);
+      if(py<-4000||py>4000){pen=false;prevpy=py;continue}
+      if(pen&&Math.abs(py-prevpy)>this.h*1.3){pen=false}
+      if(!pen){g.moveTo(px,py);pen=true}else g.lineTo(px,py);
+      prevpy=py;
+    }
+    g.stroke();g.restore();
+  }
+  line(xa,ya,xb,yb,color,width,dash){
+    const g=this.g;g.save();g.strokeStyle=color;g.lineWidth=width||2;g.lineCap='round';
+    if(dash)g.setLineDash(dash);
+    g.beginPath();g.moveTo(this.X(xa),this.Y(ya));g.lineTo(this.X(xb),this.Y(yb));g.stroke();g.restore();
+  }
+  lineSlope(x0,y0,m,color,width,dash){
+    this.line(this.x1,y0+m*(this.x1-x0),this.x2,y0+m*(this.x2-x0),color,width,dash);
+  }
+  vline(x,color,dash,width){
+    const g=this.g;g.save();g.strokeStyle=color;g.lineWidth=width||1.5;
+    if(dash)g.setLineDash(dash);
+    g.beginPath();g.moveTo(this.X(x),0);g.lineTo(this.X(x),this.h);g.stroke();g.restore();
+  }
+  hline(y,color,dash,width){
+    const g=this.g;g.save();g.strokeStyle=color;g.lineWidth=width||1.5;
+    if(dash)g.setLineDash(dash);
+    g.beginPath();g.moveTo(0,this.Y(y));g.lineTo(this.w,this.Y(y));g.stroke();g.restore();
+  }
+  point(x,y,color,label,dx,dy){
+    const g=this.g,px=this.X(x),py=this.Y(y);
+    g.save();
+    g.fillStyle=color;g.strokeStyle='#fff';g.lineWidth=2;
+    g.beginPath();g.arc(px,py,5.4,0,7);g.fill();g.stroke();
+    if(label){
+      g.font='bold 12px Inter,Roboto,system-ui,sans-serif';g.textAlign='left';
+      const lx=px+(dx===undefined?8:dx),ly=py+(dy===undefined?-9:dy);
+      g.lineWidth=3.5;g.strokeStyle='rgba(255,255,255,.92)';
+      g.strokeText(label,lx,ly);g.fillStyle=color;g.fillText(label,lx,ly);
+    }
+    g.restore();
+  }
+  openDot(x,y,color){
+    const g=this.g,px=this.X(x),py=this.Y(y);
+    g.save();g.fillStyle='#fff';g.strokeStyle=color;g.lineWidth=2.4;
+    g.beginPath();g.arc(px,py,5.2,0,7);g.fill();g.stroke();g.restore();
+  }
+  dot(x,y,color,r){
+    const g=this.g,px=this.X(x),py=this.Y(y);
+    g.save();g.fillStyle=color;g.strokeStyle='#fff';g.lineWidth=1.6;
+    g.beginPath();g.arc(px,py,r||3.6,0,7);g.fill();g.stroke();g.restore();
+  }
+  label(x,y,text,color,dx,dy){
+    const g=this.g;g.save();
+    g.font='bold 12px Inter,Roboto,system-ui,sans-serif';g.textAlign='left';
+    const lx=this.X(x)+(dx||0),ly=this.Y(y)+(dy||0);
+    g.lineWidth=3.5;g.strokeStyle='rgba(255,255,255,.92)';
+    g.strokeText(text,lx,ly);g.fillStyle=color;g.fillText(text,lx,ly);
+    g.restore();
+  }
+}
+const SIMS=[];
+function regSim(canvas,draw){SIMS.push({canvas,draw})}
+function redrawVisible(){
+  SIMS.forEach(s=>{if(s.canvas.offsetParent!==null)s.draw()});
+}
+let rszT=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(rszT);rszT=setTimeout(redrawVisible,120);
+});
+const COLF='#2563eb',COLA='#f59e0b',COLV='#7c3aed',COLPOS='#10b981',COLNEG='#ef4444',COLGREY='#9ca3af';
+
+/* numerical derivative (central difference) — fallback */
+function ndiff(f,x){const h=1e-5;return(f(x+h)-f(x-h))/(2*h);}
+
+/* ================================================================
+   DATI QUIZ
+   ================================================================ */
+const QUIZZES={
+/* ---------- Concetto di limite: teoria ---------- */
+lc_t:[
+ {q:'Che cosa descrive il limite di una funzione f(x) per x → x₀?',
+  opts:['Il valore esatto di f in x₀','Il valore verso cui tende f(x) quando x si avvicina a x₀','La pendenza della funzione in x₀','L’area sotto il grafico di f'],ans:1,
+  exp:'Il limite descrive il valore a cui si avvicina f(x) mentre x si avvicina a x₀, indipendentemente da cosa accada esattamente in x₀.'},
+ {q:'Perché si può calcolare un limite anche dove f non è definita?',
+  opts:['Perché il limite guarda i valori vicini a x₀, non quello in x₀','Perché ogni funzione è definita ovunque','Non è possibile: serve sempre f(x₀)','Perché il limite vale sempre 0 in quei punti'],ans:0,
+  exp:'Il limite osserva il comportamento di f nelle vicinanze di x₀ (con x ≠ x₀): il valore in x₀ è irrilevante e può non esistere.'},
+ {q:'Il limite (bilatero) in x₀ esiste se e solo se…',
+  opts:['f è definita in x₀','il limite sinistro e il limite destro esistono e sono uguali','f è crescente in x₀','il limite destro è maggiore del sinistro'],ans:1,
+  exp:'Teorema: il limite esiste ed è L se e solo se i due limiti laterali esistono e coincidono con L.'},
+ {q:'Se lim per x→0⁻ di f vale −1 e lim per x→0⁺ vale +1, allora il limite in 0…',
+  opts:['vale 0','vale +1','non esiste','vale −1'],ans:2,
+  exp:'I limiti laterali sono diversi: la funzione «salta», quindi il limite bilatero non esiste.'},
+ {q:'Che cosa indica un limite uguale a +∞ per x → x₀ (con x₀ finito)?',
+  opts:['Un asintoto orizzontale','Un asintoto verticale x = x₀','Che f(x₀) = +∞','Che la funzione è continua in x₀'],ans:1,
+  exp:'Un limite infinito in un punto finito segnala un asintoto verticale di equazione x = x₀.'},
+ {q:'Se lim per x→+∞ di f(x) = 3, la retta y = 3 è…',
+  opts:['un asintoto verticale','un asintoto orizzontale','un asintoto obliquo','la tangente in 0'],ans:1,
+  exp:'Un limite finito all’infinito individua un asintoto orizzontale di equazione y = L.'},
+ {q:'Nella definizione di limite, la scrittura 0 < |x − x₀| < δ serve a…',
+  opts:['includere il punto x₀','escludere il punto x₀ dall’intorno','rendere δ negativo','fissare il valore di ε'],ans:1,
+  exp:'La condizione 0 < |x − x₀| esclude proprio x = x₀: al limite interessa solo l’intorno «bucato».'},
+ {q:'Per quale funzione il limite per x → 0 NON esiste a causa di oscillazioni?',
+  opts:['f(x) = x²','f(x) = sin(1/x)','f(x) = 1/x²','f(x) = x + 1'],ans:1,
+  exp:'sin(1/x) oscilla infinite volte tra −1 e 1 avvicinandosi a 0, senza stabilizzarsi: il limite non esiste.'},
+],
+/* ---------- Concetto di limite: calcolo ---------- */
+lc_c:[
+ {q:'Quanto vale lim per x→3 di (2x + 1)?',
+  opts:['7','5','3','6'],ans:0,
+  exp:'La funzione è continua: si sostituisce, 2·3 + 1 = 7.'},
+ {q:'Quanto vale lim per x→1 di (x² − 1)/(x − 1)?',
+  opts:['0','1','2','non esiste'],ans:2,
+  exp:'Scomponendo: (x−1)(x+1)/(x−1) = x+1 → 1+1 = 2 (con un buco in x = 1).'},
+ {q:'Quanto vale lim per x→0⁺ di 1/x?',
+  opts:['+∞','−∞','0','1'],ans:0,
+  exp:'Per x → 0⁺ il denominatore è un positivo che tende a 0, quindi 1/x → +∞ (a sinistra darebbe −∞).'},
+ {q:'Quanto vale lim per x→+∞ di 1/x²?',
+  opts:['+∞','1','0','−∞'],ans:2,
+  exp:'Il denominatore cresce illimitatamente: il rapporto tende a 0 (asintoto orizzontale y = 0).'},
+ {q:'Quanto vale lim per x→0 di |x|/x?',
+  opts:['1','−1','0','non esiste'],ans:3,
+  exp:'A sinistra vale −1, a destra +1: limiti laterali diversi, quindi il limite non esiste.'},
+ {q:'Quanto vale lim per x→2 di (3x² − x)?',
+  opts:['10','12','8','14'],ans:0,
+  exp:'Per sostituzione: 3·4 − 2 = 12 − 2 = 10.'},
+ {q:'Quanto vale lim per x→−∞ di (5 + 1/x)?',
+  opts:['5','+∞','0','−∞'],ans:0,
+  exp:'1/x → 0, quindi la somma tende a 5: asintoto orizzontale y = 5.'},
+],
+/* ---------- Calcolo e forme indeterminate: teoria ---------- */
+fi_t:[
+ {q:'Quale di queste è una forma indeterminata?',
+  opts:['k + ∞','∞ / ∞','k / ∞','∞ · ∞'],ans:1,
+  exp:'∞/∞ è indeterminata. Le altre sono forme determinate: k+∞=∞, k/∞=0, ∞·∞=∞.'},
+ {q:'Quanto vale (in forma determinata) k / ∞ con k finito?',
+  opts:['∞','0','k','1'],ans:1,
+  exp:'Dividere una quantità finita per una illimitatamente grande dà 0.'},
+ {q:'Una forma indeterminata significa che…',
+  opts:['il limite non esiste mai','il limite è sempre 0','bisogna trasformare l’espressione per trovare il risultato','il limite è sempre infinito'],ans:2,
+  exp:'L’indeterminazione dice solo che la struttura non basta: occorre manipolare l’espressione (scomporre, raccogliere, razionalizzare…).'},
+ {q:'Per risolvere una forma 0/0 tra polinomi conviene…',
+  opts:['scomporre e semplificare il fattore comune (x − x₀)','derivare numeratore e denominatore a caso','sostituire x = 0','moltiplicare per zero'],ans:0,
+  exp:'Se entrambi si annullano in x₀, (x − x₀) è fattore comune: si scompone e si semplifica.'},
+ {q:'Per lim a ±∞ di un rapporto di polinomi con grado del numeratore minore del denominatore, il limite è…',
+  opts:['±∞','0','il rapporto dei coefficienti direttori','1'],ans:1,
+  exp:'Se il denominatore «vince» (grado maggiore), il rapporto tende a 0.'},
+ {q:'Per lim a ±∞ di un rapporto di polinomi con gradi uguali, il limite è…',
+  opts:['0','±∞','il rapporto dei coefficienti dei termini di grado massimo','sempre 1'],ans:2,
+  exp:'A gradi uguali conta il rapporto dei coefficienti direttori, es. (3x²+…)/(x²+…) → 3.'},
+ {q:'Quanto vale il limite notevole lim per x→0 di sin(x)/x?',
+  opts:['0','1','+∞','π'],ans:1,
+  exp:'È il primo limite notevole: vicino a 0 vale sin x ≈ x, quindi il rapporto tende a 1.'},
+ {q:'A quale costante tende (1 + 1/x)^x per x → +∞?',
+  opts:['al numero e ≈ 2,718','a 1','a 0','a +∞'],ans:0,
+  exp:'È la definizione del numero di Nepero e (forma indeterminata 1^∞).'},
+],
+/* ---------- Calcolo e forme indeterminate: calcolo ---------- */
+fi_c:[
+ {q:'Quanto vale lim per x→2 di (x² − 4)/(x − 2)?',
+  opts:['0','2','4','non esiste'],ans:2,
+  exp:'Forma 0/0: (x−2)(x+2)/(x−2) = x+2 → 4.'},
+ {q:'Quanto vale lim per x→+∞ di (3x² + x)/(x² − 5)?',
+  opts:['0','3','+∞','1'],ans:1,
+  exp:'Gradi uguali: rapporto dei coefficienti direttori 3/1 = 3.'},
+ {q:'Quanto vale lim per x→+∞ di (2x + 1)/(x² + 1)?',
+  opts:['2','+∞','0','1'],ans:2,
+  exp:'Grado del numeratore (1) minore di quello del denominatore (2): il limite è 0.'},
+ {q:'Quanto vale lim per x→+∞ di (x³ + 1)/(x² + 1)?',
+  opts:['0','1','+∞','3'],ans:2,
+  exp:'Il numeratore ha grado maggiore: il rapporto diverge a +∞.'},
+ {q:'Quanto vale lim per x→1 di (x³ − 1)/(x − 1)?',
+  opts:['1','2','3','0'],ans:2,
+  exp:'Forma 0/0: (x−1)(x²+x+1)/(x−1) = x²+x+1 → 1+1+1 = 3.'},
+ {q:'Quanto vale lim per x→0 di sin(3x)/x?',
+  opts:['1','3','0','1/3'],ans:1,
+  exp:'sin(3x)/x = 3·sin(3x)/(3x) → 3·1 = 3 (limite notevole con argomento 3x).'},
+],
+/* ---------- Continuità e asintoti: teoria ---------- */
+ca_t:[
+ {q:'Quando f è continua in x₀?',
+  opts:['Quando f(x₀) = 0','Quando lim per x→x₀ di f(x) = f(x₀)','Quando f è crescente','Quando f ha un asintoto in x₀'],ans:1,
+  exp:'Continuità: il limite esiste finito e coincide con il valore della funzione nel punto.'},
+ {q:'Quante condizioni servono per la continuità in un punto?',
+  opts:['Una sola','Due','Tre: esistenza di f(x₀), del limite, e loro uguaglianza','Nessuna'],ans:2,
+  exp:'Servono: f(x₀) definito, limite esistente finito, e i due valori uguali.'},
+ {q:'Una discontinuità di prima specie (salto) si ha quando…',
+  opts:['un limite laterale è infinito','i limiti laterali sono finiti ma diversi','il limite esiste ma f non è definita','la funzione è continua'],ans:1,
+  exp:'Prima specie = salto: limiti laterali finiti ma diversi; l’ampiezza è |ℓ₂ − ℓ₁|.'},
+ {q:'Una discontinuità eliminabile (terza specie) si ha quando…',
+  opts:['il limite esiste finito ma f(x₀) manca o è diversa','i limiti laterali sono infiniti','i limiti laterali sono diversi','la funzione non ha limite'],ans:0,
+  exp:'Terza specie = «buco»: il limite esiste finito, ma in x₀ la funzione non è definita o vale altro. Si ripara ridefinendo f(x₀).'},
+ {q:'Per una funzione razionale, gli asintoti verticali si cercano tra…',
+  opts:['gli zeri del numeratore','i valori che annullano il denominatore','i massimi della funzione','i punti di flesso'],ans:1,
+  exp:'L’asintoto verticale nasce dove il denominatore si annulla (senza che si annulli anche il numeratore).'},
+ {q:'L’asintoto obliquo y = mx + q esiste, su un dato lato, quando…',
+  opts:['m è infinito','c’è già un asintoto orizzontale','m è finito e diverso da zero e q è finito','q = 0 sempre'],ans:2,
+  exp:'Serve m finito ≠ 0 e q finito; su uno stesso lato non può coesistere con un asintoto orizzontale.'},
+ {q:'Il coefficiente angolare dell’asintoto obliquo si calcola come…',
+  opts:['lim di f(x) − x','lim di f(x)/x','lim di f ′(x)','f(0)'],ans:1,
+  exp:'m = lim per x→±∞ di f(x)/x; poi q = lim [f(x) − mx].'},
+],
+/* ---------- Continuità e asintoti: calcolo ---------- */
+ca_c:[
+ {q:'La funzione f(x) = 1/(x − 1) ha asintoto verticale in…',
+  opts:['x = 0','x = 1','x = −1','non ne ha'],ans:1,
+  exp:'Il denominatore si annulla in x = 1: lì la funzione diverge.'},
+ {q:'Qual è l’asintoto orizzontale di f(x) = (2x)/(x − 1)?',
+  opts:['y = 0','y = 1','y = 2','non ne ha'],ans:2,
+  exp:'Per x → ±∞ il rapporto di gradi uguali tende a 2/1 = 2.'},
+ {q:'La funzione f(x) = (x² − 1)/(x − 1) in x = 1 ha…',
+  opts:['un asintoto verticale','una discontinuità eliminabile','un salto','un massimo'],ans:1,
+  exp:'Si semplifica in x + 1: il limite vale 2, ma f(1) non esiste: discontinuità eliminabile (un buco).'},
+ {q:'La funzione f(x) = |x|/x in x = 0 presenta…',
+  opts:['una discontinuità eliminabile','un asintoto verticale','un salto (prima specie)','continuità'],ans:2,
+  exp:'Vale −1 a sinistra e +1 a destra: salto di ampiezza 2, discontinuità di prima specie.'},
+ {q:'Qual è l’asintoto orizzontale di f(x) = 1/(x² − 1) per x → +∞?',
+  opts:['y = 0','y = 1','y = −1','non ne ha'],ans:0,
+  exp:'Il denominatore ha grado maggiore: il limite è 0, asintoto orizzontale y = 0.'},
+ {q:'La funzione f(x) = (x² + 1)/x ha come asintoto obliquo…',
+  opts:['y = x','y = 2x','y = x + 1','non ne ha'],ans:0,
+  exp:'(x²+1)/x = x + 1/x; per x → ±∞ il termine 1/x svanisce e resta la retta y = x.'},
+],
+/* ---------- Derivata e tangente: teoria ---------- */
+dt_t:[
+ {q:'Il rapporto incrementale (f(x₀+h) − f(x₀))/h rappresenta…',
+  opts:['la pendenza della tangente','la pendenza della secante per P e Q','l’area del trapezio','il valore di f in x₀'],ans:1,
+  exp:'È la variazione media: il coefficiente angolare della retta secante che passa per P e Q.'},
+ {q:'La derivata f ′(x₀) è definita come…',
+  opts:['f(x₀)/x₀','il limite per h→0 del rapporto incrementale','la media di f','f(x₀+1) − f(x₀)'],ans:1,
+  exp:'f ′(x₀) = lim per h→0 di (f(x₀+h) − f(x₀))/h, quando esiste finito.'},
+ {q:'Geometricamente la derivata f ′(x₀) è…',
+  opts:['l’ordinata del punto','il coefficiente angolare della retta tangente in x₀','l’area sotto la curva','la concavità'],ans:1,
+  exp:'Quando h → 0 la secante diventa tangente: f ′(x₀) è la sua pendenza.'},
+ {q:'L’equazione della retta tangente in P = (x₀, f(x₀)) è…',
+  opts:['y = f ′(x₀)·x','y = f(x₀) + f ′(x₀)(x − x₀)','y = f(x₀)·(x − x₀)','y = x₀ + f(x₀)'],ans:1,
+  exp:'Retta per P con pendenza f ′(x₀): y = f(x₀) + f ′(x₀)(x − x₀).'},
+ {q:'Se una funzione è derivabile in x₀, allora in x₀ è…',
+  opts:['discontinua','continua','sempre nulla','priva di limite'],ans:1,
+  exp:'Derivabilità ⇒ continuità. Il viceversa è falso (es. |x| in 0 è continua ma non derivabile).'},
+ {q:'In un punto angoloso la funzione…',
+  opts:['è derivabile','ha derivate laterali finite ma diverse','ha derivata infinita','non è continua'],ans:1,
+  exp:'Spigolo = derivate laterali finite ma diverse: la tangente non è unica, la derivata non esiste.'},
+ {q:'Se f ′(x₀) = 0, la retta tangente in x₀ è…',
+  opts:['verticale','orizzontale','inclinata di 45°','inesistente'],ans:1,
+  exp:'Pendenza nulla significa tangente orizzontale (possibile massimo, minimo o flesso a tangente orizzontale).'},
+ {q:'In fisica, la derivata della posizione s(t) rispetto al tempo è…',
+  opts:['l’accelerazione','la velocità istantanea','lo spazio percorso','la forza'],ans:1,
+  exp:'v(t) = s ′(t): la derivata della posizione è la velocità istantanea (e a(t) = v ′(t)).'},
+],
+/* ---------- Derivata e tangente: calcolo ---------- */
+dt_c:[
+ {q:'Usando la definizione, la derivata di f(x) = x² è…',
+  opts:['x','2x','x²','2'],ans:1,
+  exp:'lim per h→0 di ((x+h)² − x²)/h = lim (2x + h) = 2x.'},
+ {q:'Qual è la pendenza della tangente a f(x) = x² nel punto x₀ = 3?',
+  opts:['3','6','9','1'],ans:1,
+  exp:'f ′(x) = 2x, quindi f ′(3) = 6.'},
+ {q:'La retta tangente a f(x) = x² in x₀ = 1 è…',
+  opts:['y = 2x − 1','y = x','y = 2x + 1','y = x − 1'],ans:0,
+  exp:'f(1)=1, f ′(1)=2: y = 1 + 2(x − 1) = 2x − 1.'},
+ {q:'La derivata di f(x) = 5x − 3 è…',
+  opts:['5','−3','5x','0'],ans:0,
+  exp:'La pendenza di una retta è costante: f ′(x) = 5.'},
+ {q:'Per f(x) = x² in x₀ = 0 la tangente è…',
+  opts:['l’asse y','l’asse x (y = 0)','y = x','y = 1'],ans:1,
+  exp:'f ′(0) = 0 e f(0) = 0: tangente orizzontale y = 0, cioè l’asse x.'},
+ {q:'Se s(t) = t² (posizione), la velocità istantanea v(t) è…',
+  opts:['t²','2t','2','t'],ans:1,
+  exp:'v(t) = s ′(t) = 2t.'},
+],
+/* ---------- Regole di derivazione: teoria ---------- */
+dr_t:[
+ {q:'La derivata di una costante k è…',
+  opts:['k','1','0','x'],ans:2,
+  exp:'Una costante non varia: la sua derivata è 0.'},
+ {q:'La derivata di xⁿ è…',
+  opts:['n·xⁿ','xⁿ⁻¹','n·xⁿ⁻¹','n·xⁿ⁺¹'],ans:2,
+  exp:'Regola della potenza: D[xⁿ] = n·xⁿ⁻¹.'},
+ {q:'La derivata di un prodotto (f·g) è…',
+  opts:['f ′·g ′','f ′·g + f·g ′','f ′·g − f·g ′','f·g ′'],ans:1,
+  exp:'Regola del prodotto: (f·g)′ = f ′g + f g ′. NON è il prodotto delle derivate.'},
+ {q:'La derivata di un quoziente (f/g) è…',
+  opts:['f ′/g ′','(f ′g + f g ′)/g²','(f ′g − f g ′)/g²','(f g ′ − f ′ g)/g²'],ans:2,
+  exp:'Regola del quoziente: (f/g)′ = (f ′g − f g ′)/g². Attenzione al segno e all’ordine.'},
+ {q:'La derivata della funzione composta f(g(x)) è…',
+  opts:['f ′(g(x))','f ′(x)·g ′(x)','f ′(g(x))·g ′(x)','f(g ′(x))'],ans:2,
+  exp:'Regola della catena: si deriva l’esterna calcolata nell’interna, per la derivata dell’interna.'},
+ {q:'Qual è la derivata di sin x?',
+  opts:['cos x','−cos x','−sin x','tan x'],ans:0,
+  exp:'D[sin x] = cos x (e D[cos x] = −sin x).'},
+ {q:'Qual è la derivata di eˣ?',
+  opts:['x·eˣ⁻¹','eˣ','eˣ/x','1'],ans:1,
+  exp:'L’esponenziale naturale è derivata di sé stesso: D[eˣ] = eˣ.'},
+ {q:'Qual è la derivata di ln x?',
+  opts:['1/x','ln x / x','x','−1/x²'],ans:0,
+  exp:'D[ln x] = 1/x (per x > 0).'},
+],
+/* ---------- Regole di derivazione: calcolo ---------- */
+dr_c:[
+ {q:'La derivata di f(x) = 3x⁴ è…',
+  opts:['12x³','3x³','12x⁴','4x³'],ans:0,
+  exp:'D[3x⁴] = 3·4x³ = 12x³.'},
+ {q:'La derivata di f(x) = x³ − 5x² + 2 è…',
+  opts:['3x² − 10x','3x² − 10x + 2','x² − 5x','3x² − 5x'],ans:0,
+  exp:'Termine a termine: 3x² − 10x (la costante 2 dà 0).'},
+ {q:'La derivata di f(x) = x²·sin x è…',
+  opts:['2x·cos x','2x·sin x + x²·cos x','x²·cos x','2x·sin x − x²·cos x'],ans:1,
+  exp:'Regola del prodotto: 2x·sin x + x²·cos x.'},
+ {q:'La derivata di f(x) = x/(x + 1) è…',
+  opts:['1','1/(x + 1)²','−1/(x + 1)²','x/(x + 1)²'],ans:1,
+  exp:'Quoziente: (1·(x+1) − x·1)/(x+1)² = 1/(x+1)².'},
+ {q:'La derivata di f(x) = (x² + 1)⁵ è…',
+  opts:['5(x² + 1)⁴','10x(x² + 1)⁴','5(x² + 1)⁴·2','(x² + 1)⁴'],ans:1,
+  exp:'Catena: 5(x²+1)⁴·(2x) = 10x(x²+1)⁴.'},
+ {q:'La derivata di f(x) = e^(−x²) è…',
+  opts:['e^(−x²)','−2x·e^(−x²)','−2x','e^(−2x)'],ans:1,
+  exp:'Catena: e^(−x²)·(−2x) = −2x·e^(−x²).'},
+ {q:'La derivata di f(x) = sin(3x) è…',
+  opts:['cos(3x)','3cos(3x)','3sin(3x)','cos(3x)/3'],ans:1,
+  exp:'Catena: cos(3x)·3 = 3cos(3x).'},
+],
+/* ---------- Studio di funzione: teoria ---------- */
+sf_t:[
+ {q:'Se f ′(x) > 0 in un intervallo, la funzione lì è…',
+  opts:['decrescente','crescente','costante','concava'],ans:1,
+  exp:'Pendenza positiva ovunque: la funzione cresce (↗).'},
+ {q:'Se f ′(x) < 0 in un intervallo, la funzione lì è…',
+  opts:['crescente','decrescente','massima','minima'],ans:1,
+  exp:'Pendenza negativa: la funzione decresce (↘).'},
+ {q:'In un punto di massimo o minimo relativo interno, la derivata prima…',
+  opts:['è infinita','si annulla (f ′ = 0)','è positiva','non esiste mai'],ans:1,
+  exp:'Teorema di Fermat: negli estremi interni la tangente è orizzontale, f ′(x₀) = 0.'},
+ {q:'f ′ passa da + a − in x₀: il punto è un…',
+  opts:['minimo relativo','massimo relativo','flesso','asintoto'],ans:1,
+  exp:'Sale poi scende: x₀ è un massimo relativo.'},
+ {q:'Se f ′(x₀) = 0 ma f ′ NON cambia segno, in x₀ si ha…',
+  opts:['un massimo','un minimo','un flesso a tangente orizzontale','un asintoto'],ans:2,
+  exp:'Senza cambio di segno non c’è estremo: è un flesso a tangente orizzontale (come x³ in 0).'},
+ {q:'Se f ′′(x) > 0 in un intervallo, la concavità è…',
+  opts:['verso il basso ∩','verso l’alto ∪','assente','verticale'],ans:1,
+  exp:'f ′′ > 0 ⇒ concavità verso l’alto (convessa, ∪).'},
+ {q:'Un punto di flesso è dove…',
+  opts:['f si annulla','f ′ è massima','la concavità cambia (f ′′ cambia segno)','f ′ è nulla'],ans:2,
+  exp:'Nel flesso la concavità si inverte: f ′′ si annulla cambiando segno.'},
+ {q:'Il test della derivata seconda dice che, se f ′(x₀) = 0 e f ′′(x₀) < 0, allora x₀ è un…',
+  opts:['minimo','massimo','flesso','asintoto'],ans:1,
+  exp:'f ′′(x₀) < 0 (concavità verso il basso) in un punto stazionario indica un massimo.'},
+],
+/* ---------- Studio di funzione: calcolo ---------- */
+sf_c:[
+ {q:'Per f(x) = x² − 4x, dove si trova il minimo?',
+  opts:['x = 0','x = 2','x = 4','x = −2'],ans:1,
+  exp:'f ′(x) = 2x − 4 = 0 ⇒ x = 2; f ′′ = 2 > 0: è un minimo.'},
+ {q:'La funzione f(x) = x³ − 3x ha punti stazionari in…',
+  opts:['x = 0','x = ±1','x = ±3','x = ±√3'],ans:1,
+  exp:'f ′(x) = 3x² − 3 = 0 ⇒ x² = 1 ⇒ x = ±1 (max in −1, min in +1).'},
+ {q:'Per f(x) = x³ − 3x, il punto x = −1 è un…',
+  opts:['minimo','massimo','flesso','asintoto'],ans:1,
+  exp:'f ′ passa da + a − in x = −1: massimo relativo (con f(−1) = 2).'},
+ {q:'Per f(x) = x³ il punto x = 0 è un…',
+  opts:['massimo','minimo','flesso a tangente orizzontale','punto angoloso'],ans:2,
+  exp:'f ′ = 3x² si annulla in 0 ma resta ≥ 0: nessun estremo, è un flesso a tangente orizzontale.'},
+ {q:'In quale intervallo f(x) = x² − 4x è decrescente?',
+  opts:['x > 2','x < 2','x > 0','ovunque'],ans:1,
+  exp:'f ′(x) = 2x − 4 < 0 per x < 2: lì la funzione decresce.'},
+ {q:'Per f(x) = x³ la concavità è verso l’alto quando…',
+  opts:['x < 0','x > 0','sempre','mai'],ans:1,
+  exp:'f ′′(x) = 6x > 0 per x > 0: concavità verso l’alto (con flesso in 0).'},
+],
+};
+$$('.quiz[data-quiz]').forEach(initQuiz);
+
+/* ================================================================
+   Helper condivisi per le simulazioni
+   ================================================================ */
+const LIM=s=>'<span class="lim"><span class="lt">lim</span><span class="lb">'+s+'</span></span>';
+const FR=(a,b)=>'<span class="frac"><span class="nu">'+a+'</span><span class="de">'+b+'</span></span>';
+function buildPick(id,arr,cb){
+  const c=$('#'+id);c.innerHTML='';
+  arr.forEach((p,i)=>{
+    const b=document.createElement('button');b.innerHTML=p.tab;
+    if(i===0)b.classList.add('active');
+    b.addEventListener('click',()=>{[...c.children].forEach(x=>x.classList.toggle('active',x===b));cb(i);});
+    c.appendChild(b);
+  });
+}
+function fmtLim(y){
+  if(Number.isNaN(y))return'non def.';
+  if(!isFinite(y)||Math.abs(y)>1e5)return y<0?'−∞':'+∞';
+  return fmt(y);
+}
+function wrapBrk(P){
+  const g=0.02;
+  if(!P.brk||!P.brk.length)return P.f;
+  return x=>{for(const b of P.brk)if(Math.abs(x-b)<g)return NaN;return P.f(x);};
+}
+
+/* ================================================================
+   SIM 1 · Concetto di limite — avvicinarsi al limite
+   ================================================================ */
+(function(){
+const LC=[
+ {tab:FR('x²−1','x−1'), eq:LIM('x→1')+' '+FR('x² − 1','x − 1'), f:x=>(x*x-1)/(x-1), x0:1, view:[-2,4,-1,5],
+  Ll:'2',Lr:'2',Llim:'2',cls:'c2',hole:true,holeY:2,brk:[],
+  txt:'Limite finito: i valori da sinistra e da destra convergono a 2. In x₀ la funzione ha un «buco» (discontinuità eliminabile).'},
+ {tab:FR('sin x','x'), eq:LIM('x→0')+' '+FR('sin x','x'), f:x=>Math.sin(x)/x, x0:0, view:[-7,7,-0.5,1.4],
+  Ll:'1',Lr:'1',Llim:'1',cls:'c2',hole:true,holeY:1,brk:[],
+  txt:'Limite notevole: sin(x)/x tende a 1 da entrambi i lati. In 0 la funzione non è definita: c’è un buco proprio sul valore 1.'},
+ {tab:FR('x²−4','x−2'), eq:LIM('x→2')+' '+FR('x² − 4','x − 2'), f:x=>(x*x-4)/(x-2), x0:2, view:[-1,5,0,7],
+  Ll:'4',Lr:'4',Llim:'4',cls:'c2',hole:true,holeY:4,brk:[],
+  txt:'Forma 0/0 che si semplifica in x + 2: il limite vale 4, con un buco in x = 2.'},
+ {tab:FR('1','x²'), eq:LIM('x→0')+' '+FR('1','x²'), f:x=>1/(x*x), x0:0, view:[-4,4,-1,9],
+  Ll:'+∞',Lr:'+∞',Llim:'+∞',cls:'c1',hole:false,holeY:null,brk:[],
+  txt:'Limite infinito: la funzione cresce illimitatamente da entrambi i lati. La retta x = 0 è asintoto verticale.'},
+ {tab:FR('1','x−1'), eq:LIM('x→1')+' '+FR('1','x − 1'), f:x=>1/(x-1), x0:1, view:[-3,5,-6,6],
+  Ll:'−∞',Lr:'+∞',Llim:'non esiste',cls:'c0',hole:false,holeY:null,brk:[1],
+  txt:'Limiti laterali infiniti di segno opposto: il limite bilatero non esiste. La retta x = 1 è asintoto verticale.'},
+ {tab:FR('|x|','x'), eq:LIM('x→0')+' '+FR('|x|','x'), f:x=>Math.abs(x)/x, x0:0, view:[-4,4,-2.2,2.2],
+  Ll:'−1',Lr:'+1',Llim:'non esiste',cls:'c0',hole:false,holeY:null,brk:[0],
+  txt:'Salto: limite sinistro −1 e destro +1, finiti ma diversi. Il limite non esiste (discontinuità di prima specie).'},
+];
+let cur=0,DD=0.3;
+const plot=new Plot($('#lcPlot'));
+function dist(){return DD/16;}
+function cols(side){const x0=LC[cur].x0;const ms=[DD,DD/4,DD/16];
+  return side<0?ms.map(m=>x0-m):ms.slice().reverse().map(m=>x0+m);}
+function tblHTML(cap,xs,f){
+  return '<caption>'+cap+'</caption>'+
+    '<tr><th>x</th>'+xs.map(x=>'<td>'+fmt(x,4)+'</td>').join('')+'</tr>'+
+    '<tr><th>f(x)</th>'+xs.map(x=>'<td>'+fmt(f(x),4)+'</td>').join('')+'</tr>';
+}
+function redraw(){
+  const P=LC[cur];plot.fit();plot.view(P.view[0],P.view[1],P.view[2],P.view[3]);plot.axes();
+  plot.vline(P.x0,COLGREY,[5,4]);
+  plot.plotFn(wrapBrk(P),COLF,2.8);
+  if(P.hole)plot.openDot(P.x0,P.holeY,COLF);
+  const d=dist(),xl=P.x0-d,xr=P.x0+d;
+  plot.point(xl,P.f(xl),COLA);plot.point(xr,P.f(xr),COLA);
+}
+function update(){
+  const P=LC[cur];
+  $('#lcEq').innerHTML=P.eq;
+  const z=+$('#lcZoom').value;
+  DD=1.2*Math.pow(0.0035/1.2,z/100);
+  $('#lcZoomV').textContent='δ = '+fmt(dist(),4);
+  const xa=fmt(P.x0);
+  $('#lcTblL').innerHTML=tblHTML('x → '+xa+'⁻',cols(-1),P.f);
+  $('#lcTblR').innerHTML=tblHTML('x → '+xa+'⁺',cols(+1),P.f);
+  $('#lcCase').className='case-banner '+P.cls;$('#lcCase').textContent=P.txt;
+  $('#lcL').textContent=P.Ll;$('#lcR').textContent=P.Lr;$('#lcLim').textContent=P.Llim;
+  redraw();
+}
+buildPick('lcPick',LC,i=>{cur=i;update();});
+$('#lcZoom').addEventListener('input',update);
+regSim($('#lcPlot'),redraw);
+update();
+})();
+
+/* ================================================================
+   SIM 2 · Forme indeterminate
+   ================================================================ */
+(function(){
+const FI=[
+ {tab:FR('x²−4','x−2'), eq:LIM('x→2')+' '+FR('x² − 4','x − 2'), f:x=>(x*x-4)/(x-2), at:2, two:true, val:4, view:[-1,5,0,7], brk:[],
+  form:'Sostituendo x = 2:  (4 − 4)/(2 − 2) = 0/0 — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">Scompongo il numeratore: x² − 4 = (x − 2)(x + 2)</li>'+
+        '<li class="eqline">Semplifico il fattore comune (x − 2):  '+FR('(x − 2)(x + 2)','x − 2')+' = x + 2</li>'+
+        '<li class="eqline">Sostituisco: '+LIM('x→2')+' (x + 2) = 4</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= 4</span></div>'},
+ {tab:FR('x³−1','x−1'), eq:LIM('x→1')+' '+FR('x³ − 1','x − 1'), f:x=>(x*x*x-1)/(x-1), at:1, two:true, val:3, view:[0,2.2,0,6], brk:[],
+  form:'Sostituendo x = 1:  (1 − 1)/(1 − 1) = 0/0 — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">Scompongo: x³ − 1 = (x − 1)(x² + x + 1)</li>'+
+        '<li class="eqline">Semplifico (x − 1):  resta x² + x + 1</li>'+
+        '<li class="eqline">Sostituisco: 1 + 1 + 1 = 3</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= 3</span></div>'},
+ {tab:'∞/∞ → k', eq:LIM('x→+∞')+' '+FR('3x² + x','x² − 5'), f:x=>(3*x*x+x)/(x*x-5), at:Infinity, two:false, val:3, view:[0,30,0,6], brk:[],
+  form:'Per x → +∞:  ∞/∞ — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">Raccolgo x² sopra e sotto: '+FR('x²(3 + 1/x)','x²(1 − 5/x²)')+'</li>'+
+        '<li class="eqline">Semplifico x² e mando x → +∞: i termini 1/x e 5/x² → 0</li>'+
+        '<li class="eqline">Resta '+FR('3','1')+' = 3 (rapporto dei coefficienti direttori)</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= 3</span></div>'},
+ {tab:'∞/∞ → 0', eq:LIM('x→+∞')+' '+FR('2x + 1','x² + 1'), f:x=>(2*x+1)/(x*x+1), at:Infinity, two:false, val:0, view:[0,30,-0.4,1.6], brk:[],
+  form:'Per x → +∞:  ∞/∞ — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">Grado del numeratore (1) minore del denominatore (2)</li>'+
+        '<li class="eqline">Il denominatore «vince»: il rapporto tende a 0</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= 0</span> &nbsp;<span class="step-note">(asintoto orizzontale y = 0)</span></div>'},
+ {tab:'∞/∞ → ∞', eq:LIM('x→+∞')+' '+FR('x³ + 1','x² + 1'), f:x=>(x*x*x+1)/(x*x+1), at:Infinity, two:false, val:Infinity, view:[0,12,0,60], brk:[],
+  form:'Per x → +∞:  ∞/∞ — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">Grado del numeratore (3) maggiore del denominatore (2)</li>'+
+        '<li class="eqline">Il numeratore «vince»: il rapporto diverge</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= +∞</span></div>'},
+ {tab:FR('sin x','x'), eq:LIM('x→0')+' '+FR('sin x','x'), f:x=>Math.sin(x)/x, at:0, two:true, val:1, view:[-7,7,-0.5,1.4], brk:[],
+  form:'Sostituendo x = 0:  sin(0)/0 = 0/0 — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">È il <strong>primo limite notevole</strong></li>'+
+        '<li class="eqline">'+LIM('x→0')+' '+FR('sin x','x')+' = 1</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= 1</span></div>'},
+ {tab:'√(x²+x)−x', eq:LIM('x→+∞')+' (√(x² + x) − x)', f:x=>Math.sqrt(x*x+x)-x, at:Infinity, two:false, val:0.5, view:[0,30,-0.4,1.6], brk:[],
+  form:'Per x → +∞:  ∞ − ∞ — forma indeterminata.',
+  steps:'<ol class="steps"><li class="eqline">Razionalizzo (moltiplico per √(x²+x) + x): '+FR('(x² + x) − x²','√(x² + x) + x')+' = '+FR('x','√(x² + x) + x')+'</li>'+
+        '<li class="eqline">Raccolgo x: '+FR('1','√(1 + 1/x) + 1')+' → '+FR('1','1 + 1')+'</li></ol>'+
+        '<div class="sol-box"><span class="t">Limite</span><span class="eqline">= 1/2</span></div>'},
+];
+let cur=0,DD=0.6;
+const plot=new Plot($('#fiPlot'));
+function update(){
+  const P=FI[cur];
+  $('#fiEq').innerHTML=P.eq;
+  $('#fiForm').textContent=P.form;
+  $('#fiSteps').innerHTML=P.steps;
+  const z=+$('#fiZoom').value;
+  let xs,cap;
+  if(P.at===Infinity){
+    const base=8*Math.pow(25,z/100);
+    xs=[base,base*4,base*16];cap='x → +∞';
+    $('#fiZoomV').textContent='x fino a '+fmt(xs[2],0);
+  }else{
+    DD=1*Math.pow(0.004,z/100);
+    xs=P.two?[P.at-DD,P.at-DD/6,P.at+DD/6,P.at+DD]:[P.at+DD,P.at+DD/6];
+    cap='x → '+fmt(P.at);
+    $('#fiZoomV').textContent='δ = '+fmt(DD/6,4);
+  }
+  $('#fiTbl').innerHTML='<caption>'+cap+'</caption>'+
+    '<tr><th>x</th>'+xs.map(x=>'<td>'+fmt(x,3)+'</td>').join('')+'</tr>'+
+    '<tr><th>f(x)</th>'+xs.map(x=>'<td>'+fmt(P.f(x),4)+'</td>').join('')+'</tr>';
+  redraw();
+}
+function redraw(){
+  const P=FI[cur];plot.fit();plot.view(P.view[0],P.view[1],P.view[2],P.view[3]);plot.axes();
+  if(isFinite(P.val))plot.hline(P.val,COLPOS,[6,5],1.6);
+  plot.plotFn(wrapBrk(P),COLF,2.8);
+  if(P.two&&isFinite(P.val)){plot.vline(P.at,COLGREY,[5,4]);plot.openDot(P.at,P.val,COLF);plot.point(P.at,P.val,COLPOS,'L');}
+}
+buildPick('fiPick',FI,i=>{cur=i;update();});
+$('#fiZoom').addEventListener('input',update);
+regSim($('#fiPlot'),redraw);
+update();
+})();
+
+/* ================================================================
+   SIM 3 · Continuità e asintoti
+   ================================================================ */
+(function(){
+const CA=[
+ {tab:FR('2x','x−1'), eq:'f(x) = '+FR('2x','x − 1'), f:x=>2*x/(x-1), view:[-6,8,-8,12], rng:[-3,5,0.25,1],
+  va:[1], ha:[2], obl:null, rem:[], brk:[1],
+  asy:'<div class="note-err">Asintoto verticale: <b>x = 1</b></div><div class="note-key">Asintoto orizzontale: <b>y = 2</b></div>'},
+ {tab:FR('1','x²−1'), eq:'f(x) = '+FR('1','x² − 1'), f:x=>1/(x*x-1), view:[-4,4,-5,5], rng:[-3,3,0.25,0.5],
+  va:[-1,1], ha:[0], obl:null, rem:[], brk:[-1,1],
+  asy:'<div class="note-err">Asintoti verticali: <b>x = −1</b> e <b>x = 1</b></div><div class="note-key">Asintoto orizzontale: <b>y = 0</b></div>'},
+ {tab:FR('x²+1','x'), eq:'f(x) = '+FR('x² + 1','x'), f:x=>(x*x+1)/x, view:[-7,7,-8,8], rng:[-4,4,0.25,2],
+  va:[0], ha:[], obl:{m:1,q:0}, rem:[], brk:[0],
+  asy:'<div class="note-err">Asintoto verticale: <b>x = 0</b></div><div class="note-key">Asintoto obliquo: <b>y = x</b></div>'},
+ {tab:FR('|x|','x'), eq:'f(x) = '+FR('|x|','x'), f:x=>Math.abs(x)/x, view:[-4,4,-2.4,2.4], rng:[-3,3,0.25,0],
+  va:[], ha:[], obl:null, rem:[], brk:[0],
+  asy:'<div class="note-warn">Nessun asintoto verticale. In <b>x = 0</b> c’è una discontinuità di <b>prima specie</b> (salto da −1 a +1).</div>'},
+ {tab:FR('x²−1','x−1'), eq:'f(x) = '+FR('x² − 1','x − 1'), f:x=>(x*x-1)/(x-1), view:[-4,6,-3,7], rng:[-3,5,0.25,1],
+  va:[], ha:[], obl:null, rem:[{x:1,y:2}], brk:[],
+  asy:'<div class="note-warn">Nessun asintoto. In <b>x = 1</b> c’è una discontinuità <b>eliminabile</b>: la funzione coincide con la retta y = x + 1 ma con un buco.</div>'},
+];
+let cur=0;
+const plot=new Plot($('#caPlot'));
+function redraw(){
+  const P=CA[cur];plot.fit();plot.view(P.view[0],P.view[1],P.view[2],P.view[3]);plot.axes();
+  P.va.forEach(x=>plot.vline(x,COLNEG,[6,5],1.6));
+  P.ha.forEach(y=>plot.hline(y,COLV,[6,5],1.6));
+  if(P.obl)plot.line(plot.x1,P.obl.m*plot.x1+P.obl.q,plot.x2,P.obl.m*plot.x2+P.obl.q,COLV,1.6,[6,5]);
+  plot.plotFn(wrapBrk(P),COLF,2.8);
+  P.rem.forEach(p=>plot.openDot(p.x,p.y,COLF));
+  const x0=+$('#caX0').value,fv=P.f(x0);
+  plot.vline(x0,COLA,[3,3],1.4);
+  if(isFinite(fv))plot.point(x0,fv,COLA,'x₀');
+}
+function update(){
+  const P=CA[cur];
+  $('#caEq').innerHTML=P.eq;
+  $('#caAsy').innerHTML=P.asy;
+  const x0=+$('#caX0').value;
+  $('#caX0V').textContent=fmt(x0);
+  const yl=P.f(x0-1e-4),yr=P.f(x0+1e-4),fv=P.f(x0),big=1e4;
+  $('#caL').textContent=fmtLim(yl);$('#caR').textContent=fmtLim(yr);
+  $('#caV').textContent=isFinite(fv)?fmt(fv):'non def.';
+  let cls,txt;
+  const infl=(!isFinite(yl)||Math.abs(yl)>big),infr=(!isFinite(yr)||Math.abs(yr)>big);
+  if(infl||infr){cls='c0';txt='Discontinuità di seconda specie: almeno un limite laterale è infinito. x = x₀ è asintoto verticale.';}
+  else if(Math.abs(yl-yr)>1e-3){cls='c0';txt='Discontinuità di prima specie (salto): limiti laterali finiti ma diversi, ampiezza '+fmt(Math.abs(yr-yl))+'.';}
+  else{const L=(yl+yr)/2;
+    if(!isFinite(fv)||Math.abs(fv-L)>1e-3){cls='c1';txt='Discontinuità eliminabile (terza specie): il limite vale '+fmt(L)+' ma in x₀ la funzione non è definita o vale altro.';}
+    else{cls='c2';txt='La funzione è continua in x₀: limite e valore coincidono ('+fmt(L)+').';}}
+  $('#caVerdict').className='case-banner '+cls;$('#caVerdict').textContent=txt;
+  redraw();
+}
+buildPick('caPick',CA,i=>{cur=i;const P=CA[i],s=$('#caX0');
+  s.min=P.rng[0];s.max=P.rng[1];s.step=P.rng[2];s.value=P.rng[3];update();});
+$('#caX0').addEventListener('input',update);
+regSim($('#caPlot'),redraw);
+(function(){const P=CA[0],s=$('#caX0');s.min=P.rng[0];s.max=P.rng[1];s.step=P.rng[2];s.value=P.rng[3];})();
+update();
+})();
+
+/* ================================================================
+   SIM 4 · Dalla secante alla tangente
+   ================================================================ */
+(function(){
+const DT=[
+ {tab:'¼x²', f:x=>0.25*x*x, fp:x=>0.5*x, view:[-5,5,-1.5,6], rng:[-4,4,0.1,1.4]},
+ {tab:'x³/6 − x', f:x=>x*x*x/6-x, fp:x=>x*x/2-1, view:[-4.2,4.2,-3.5,3.5], rng:[-3.5,3.5,0.1,1.6]},
+ {tab:'sin x', f:x=>Math.sin(x), fp:x=>Math.cos(x), view:[-6.5,6.5,-2,2], rng:[-6,6,0.1,1]},
+ {tab:'0,6·e^(0,5x)', f:x=>0.6*Math.exp(0.5*x), fp:x=>0.3*Math.exp(0.5*x), view:[-5,4,-1,6], rng:[-4,3.5,0.1,0]},
+];
+let cur=0,raf=null;
+const plot=new Plot($('#dtPlot'));
+function hval(){const s=+$('#dtH').value;if(s===0)return 0.0008;return Math.sign(s)*Math.pow(Math.abs(s)/30,2)*3;}
+function redraw(){
+  const P=DT[cur];plot.fit();plot.view(P.view[0],P.view[1],P.view[2],P.view[3]);plot.axes();
+  plot.plotFn(P.f,COLF,2.6);
+  const x0=+$('#dtX0').value,h=hval(),fx0=P.f(x0),xq=x0+h,fq=P.f(xq);
+  const msec=(fq-fx0)/h,mtan=P.fp(x0);
+  plot.lineSlope(x0,fx0,mtan,COLV,2.4,[7,5]);
+  if(Math.abs(h)>0.02)plot.lineSlope(x0,fx0,msec,COLA,2.2);
+  if(Math.abs(h)>0.05)plot.point(xq,fq,COLA,'Q',8,-9);
+  plot.point(x0,fx0,COLV,'P',8,16);
+}
+function update(){
+  const P=DT[cur];
+  const x0=+$('#dtX0').value,h=hval(),fx0=P.f(x0),xq=x0+h,fq=P.f(xq);
+  const msec=(fq-fx0)/h,mtan=P.fp(x0);
+  $('#dtX0V').textContent=fmt(x0);
+  $('#dtHV').textContent=fmt(h,3);
+  $('#dtRI').textContent=fmt(msec,3);
+  $('#dtDer').textContent=fmt(mtan,3);
+  const q=fx0-mtan*x0;
+  $('#dtTan').innerHTML='y = '+fmt(mtan)+'x '+(q>=0?'+ ':'− ')+fmt(Math.abs(q));
+  $('#dtNote').textContent=Math.abs(h)<0.05
+    ?'h è quasi 0: la secante coincide con la tangente e il rapporto incrementale ≈ f ′(x₀).'
+    :'Riduci h (o premi Anima) per avvicinare la secante alla tangente.';
+  redraw();
+}
+function animate(){
+  if(raf)cancelAnimationFrame(raf);
+  let sign=(+$('#dtH').value)>=0?1:-1;if(+$('#dtH').value===0)sign=1;
+  const from=24*sign,t0=performance.now();
+  function step(t){const k=Math.min(1,(t-t0)/1500),e=1-Math.pow(1-k,3);
+    $('#dtH').value=Math.round(from*(1-e));update();if(k<1)raf=requestAnimationFrame(step);}
+  raf=requestAnimationFrame(step);
+}
+buildPick('dtPick',DT,i=>{cur=i;const P=DT[i],s=$('#dtX0');
+  s.min=P.rng[0];s.max=P.rng[1];s.step=P.rng[2];s.value=P.rng[3];update();});
+$('#dtX0').addEventListener('input',update);
+$('#dtH').addEventListener('input',()=>{if(raf)cancelAnimationFrame(raf);update();});
+$('#dtAnim').addEventListener('click',animate);
+regSim($('#dtPlot'),redraw);
+(function(){const P=DT[0],s=$('#dtX0');s.min=P.rng[0];s.max=P.rng[1];s.step=P.rng[2];s.value=P.rng[3];})();
+update();
+})();
+
+/* ================================================================
+   SIM 5 · La funzione e la sua derivata
+   ================================================================ */
+(function(){
+const DR=[
+ {tab:'x²−2x', eq:'f(x) = x² − 2x', f:x=>x*x-2*x, fp:x=>2*x-2, fpExpr:'f ′(x) = 2x − 2', view:[-3,5,-3,6], rng:[-2.5,4.5,0.1,0.8]},
+ {tab:'⅓x³−x', eq:'f(x) = ⅓x³ − x', f:x=>x*x*x/3-x, fp:x=>x*x-1, fpExpr:'f ′(x) = x² − 1', view:[-3.2,3.2,-3,3], rng:[-3,3,0.1,0.8]},
+ {tab:'sin x', eq:'f(x) = sin x', f:x=>Math.sin(x), fp:x=>Math.cos(x), fpExpr:'f ′(x) = cos x', view:[-6.5,6.5,-1.8,1.8], rng:[-6,6,0.1,1]},
+ {tab:'e^(−x²)', eq:'f(x) = e^(−x²)', f:x=>Math.exp(-x*x), fp:x=>-2*x*Math.exp(-x*x), fpExpr:'f ′(x) = −2x·e^(−x²)', view:[-3,3,-1.3,1.4], rng:[-2.5,2.5,0.1,0.6]},
+];
+let cur=0;
+const plot=new Plot($('#drPlot'));
+function redraw(){
+  const P=DR[cur];plot.fit();plot.view(P.view[0],P.view[1],P.view[2],P.view[3]);plot.axes();
+  plot.plotFn(P.fp,COLV,2.2);
+  plot.plotFn(P.f,COLF,2.8);
+  const x0=+$('#drX0').value,fx0=P.f(x0),d=P.fp(x0);
+  plot.lineSlope(x0,fx0,d,COLA,2);
+  plot.dot(x0,d,COLV,4);
+  plot.point(x0,fx0,COLF);
+}
+function update(){
+  const P=DR[cur];
+  $('#drEq').innerHTML=P.eq;
+  $('#drFormula').innerHTML=P.fpExpr;
+  const x0=+$('#drX0').value,d=P.fp(x0);
+  $('#drX0V').textContent=fmt(x0);
+  $('#drFx').textContent=fmt(P.f(x0));
+  $('#drDx').textContent=fmt(d);
+  let cls,txt;
+  if(Math.abs(d)<0.04){cls='c1';txt='f ′(x₀) ≈ 0: tangente orizzontale (possibile massimo o minimo).';}
+  else if(d>0){cls='c2';txt='f ′(x₀) > 0: la funzione è crescente in x₀ (tangente in salita).';}
+  else{cls='c0';txt='f ′(x₀) < 0: la funzione è decrescente in x₀ (tangente in discesa).';}
+  $('#drMono').className='case-banner '+cls;$('#drMono').textContent=txt;
+  redraw();
+}
+buildPick('drPick',DR,i=>{cur=i;const P=DR[i],s=$('#drX0');
+  s.min=P.rng[0];s.max=P.rng[1];s.step=P.rng[2];s.value=P.rng[3];update();});
+$('#drX0').addEventListener('input',update);
+regSim($('#drPlot'),redraw);
+(function(){const P=DR[0],s=$('#drX0');s.min=P.rng[0];s.max=P.rng[1];s.step=P.rng[2];s.value=P.rng[3];})();
+update();
+})();
+
+/* ================================================================
+   SIM 6 · Studio di funzione con la derivata
+   ================================================================ */
+(function(){
+const SF=[
+ {tab:'x³−3x', eq:'f(x) = x³ − 3x', f:x=>x**3-3*x, fp:x=>3*x*x-3, fpp:x=>6*x,
+  fpExpr:'f ′(x) = 3x² − 3', fppExpr:'f ′′(x) = 6x', view:[-3,3,-4,4],
+  stat:[{x:-1,type:'max'},{x:1,type:'min'}], flex:[{x:0}]},
+ {tab:'x⁴−2x²', eq:'f(x) = x⁴ − 2x²', f:x=>x**4-2*x*x, fp:x=>4*x**3-4*x, fpp:x=>12*x*x-4,
+  fpExpr:'f ′(x) = 4x³ − 4x', fppExpr:'f ′′(x) = 12x² − 4', view:[-2,2,-1.6,2.6],
+  stat:[{x:-1,type:'min'},{x:0,type:'max'},{x:1,type:'min'}], flex:[{x:-0.5774},{x:0.5774}]},
+ {tab:'x/(x²+1)', eq:'f(x) = '+FR('x','x² + 1'), f:x=>x/(x*x+1), fp:x=>(1-x*x)/((x*x+1)**2), fpp:x=>(2*x*(x*x-3))/((x*x+1)**3),
+  fpExpr:'f ′(x) = '+FR('1 − x²','(x² + 1)²'), fppExpr:'f ′′(x) = '+FR('2x(x² − 3)','(x² + 1)³'), view:[-5,5,-0.8,0.8],
+  stat:[{x:-1,type:'min'},{x:1,type:'max'}], flex:[{x:-1.732},{x:0},{x:1.732}]},
+ {tab:'x³', eq:'f(x) = x³', f:x=>x**3, fp:x=>3*x*x, fpp:x=>6*x,
+  fpExpr:'f ′(x) = 3x²', fppExpr:'f ′′(x) = 6x', view:[-2.4,2.4,-4,4],
+  stat:[{x:0,type:'flesso'}], flex:[{x:0}]},
+];
+const COLOF={max:COLPOS,min:COLNEG,flesso:COLV};
+const SYM={max:'Max',min:'min',flesso:'F'};
+let cur=0;
+const plot=new Plot($('#sfPlot'));
+function redraw(){
+  const P=SF[cur];plot.fit();plot.view(P.view[0],P.view[1],P.view[2],P.view[3]);plot.axes();
+  plot.plotFn(P.f,COLF,2.8);
+  P.flex.forEach(p=>{if(!P.stat.some(s=>Math.abs(s.x-p.x)<1e-6))plot.dot(p.x,P.f(p.x),COLV,4.2);});
+  P.stat.forEach(s=>plot.point(s.x,P.f(s.x),COLOF[s.type],SYM[s.type],8,s.type==='min'?16:-9));
+}
+function strip(P){
+  const xs=P.stat.map(s=>s.x).sort((a,b)=>a-b);
+  const bounds=[P.view[0]-1,...xs,P.view[1]+1];
+  let h='';
+  for(let i=0;i<xs.length+1;i++){
+    const mid=(bounds[i]+bounds[i+1])/2,pos=P.fp(mid)>0;
+    let lab;
+    if(i===0)lab='x &lt; '+fmt(xs[0]);
+    else if(i===xs.length)lab='x &gt; '+fmt(xs[xs.length-1]);
+    else lab=fmt(xs[i-1])+' … '+fmt(xs[i]);
+    h+='<div class="col"><div class="v">'+lab+'</div><div class="s '+(pos?'pos':'neg')+'">'+(pos?'+ ↗':'− ↘')+'</div></div>';
+    if(i<xs.length){const s=P.stat[i];
+      h+='<div class="col" style="flex:0 0 auto"><div class="v">'+fmt(s.x)+'</div><div class="a" style="color:'+COLOF[s.type]+'">0</div></div>';}
+  }
+  return h;
+}
+function update(){
+  const P=SF[cur];
+  $('#sfEq').innerHTML=P.eq;
+  $('#sfFp').innerHTML=P.fpExpr;
+  $('#sfFpp').innerHTML=P.fppExpr;
+  $('#sfStrip').innerHTML=strip(P);
+  let info='';
+  P.stat.forEach(s=>{
+    const y=fmt(P.f(s.x));
+    if(s.type==='max')info+='<div class="note-ok">Massimo relativo in ( '+fmt(s.x)+' ; '+y+' )</div>';
+    else if(s.type==='min')info+='<div class="note-err">Minimo relativo in ( '+fmt(s.x)+' ; '+y+' )</div>';
+    else info+='<div class="note-key">Flesso a tangente orizzontale in ( '+fmt(s.x)+' ; '+y+' )</div>';
+  });
+  P.flex.forEach(p=>{if(!P.stat.some(s=>Math.abs(s.x-p.x)<1e-6))
+    info+='<div class="note-key">Punto di flesso in ( '+fmt(p.x)+' ; '+fmt(P.f(p.x))+' )</div>';});
+  $('#sfInfo').innerHTML=info;
+  redraw();
+}
+buildPick('sfPick',SF,i=>{cur=i;update();});
+regSim($('#sfPlot'),redraw);
+update();
+})();
+
+/* ---------------- Avvio ---------------- */
+const initId=location.hash.slice(1);
+show(document.getElementById(initId)?initId:'home');
+</script>
+
+
+</body>
+</html>
