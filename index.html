@@ -6,6 +6,10 @@
 <meta name="theme-color" content="#f9fafb">
 <meta name="description" content="App didattica interattiva: limiti di funzioni, continuità, asintoti e derivate con le loro applicazioni. Teoria, simulazioni e quiz di autovalutazione per il triennio.">
 <title>Limiti e derivate · Analisi matematica</title>
+<script>/* imposta il tema prima del render per evitare il flash */
+(function(){try{var t=localStorage.getItem('lim-der-theme');
+if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <style>
 /* ===================== Design system ===================== */
 :root{
@@ -43,7 +47,7 @@ body{background:var(--color-bg);color:var(--color-text);
 /* ===================== Header ===================== */
 header{background:var(--surface);border-bottom:1px solid var(--border);
   padding:.85rem 1rem .8rem}
-header .wrap{max-width:1000px;margin:0 auto;display:flex;align-items:baseline;
+header .wrap{max-width:1000px;margin:0 auto;display:flex;align-items:center;
   justify-content:space-between;gap:.8rem;flex-wrap:wrap}
 header h1{font-size:clamp(1.12rem,3.8vw,1.45rem);font-weight:800;
   letter-spacing:-.02em;color:var(--color-text)}
@@ -179,7 +183,7 @@ input[type=range]{accent-color:var(--color-primary);min-height:26px}
 @media(max-width:740px){.sim-layout{grid-template-columns:1fr}}
 .sim-pane,.ctrl-pane{min-width:0}
 canvas.plot{width:100%;height:auto;display:block;border:1px solid var(--border);
-  border-radius:10px;background:#fff}
+  border-radius:10px;background:var(--canvas-bg)}
 .legend{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0 0;font-size:.76em}
 .legend span{display:inline-flex;align-items:center;gap:.32rem;background:var(--color-bg);
   padding:.18rem .55rem;border-radius:999px;border:1px solid var(--border);color:var(--muted)}
@@ -316,13 +320,84 @@ footer{border-top:1px solid var(--border);background:var(--surface);
 @media(max-width:480px){
   .card{padding:.95rem .9rem}
 }
+
+/* ===================== Tema chiaro/scuro ===================== */
+/* colori dei grafici (canvas) — default chiaro */
+:root{
+  --canvas-bg:#ffffff;
+  --chart-grid:#eef1f6;
+  --chart-axis:#9ca3af;
+  --chart-label:#9ca3af;
+  --chart-halo:#ffffff;
+}
+/* pulsante toggle nell'header */
+.titles{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;min-width:0}
+.theme-toggle{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:999px;border:1px solid var(--border);
+  background:var(--color-bg);color:var(--color-secondary);cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s}
+.theme-toggle:hover{background:var(--primary-soft);border-color:var(--color-primary)}
+.theme-toggle .ic-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .ic-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .ic-sun{display:inline}
+
+/* ---- palette scura (risparmio energetico su schermi OLED) ---- */
+:root[data-theme="dark"]{
+  --color-primary:#3b82f6;
+  --color-secondary:#93c5fd;
+  --color-bg:#0f172a;
+  --color-text:#e2e8f0;
+  --surface:#1e293b;
+  --border:#334155;
+  --muted:#94a3b8;
+  --primary-soft:#152a45;
+  --accent-soft:#3a2c10;
+  --accent-deep:#fbbf24;
+  --success-soft:#0e2f23;
+  --success-deep:#34d399;
+  --error-soft:#3a1a1d;
+  --error-deep:#f87171;
+  --violet:#a78bfa;
+  --violet-soft:#231a42;
+  --shadow:0 1px 3px rgba(0,0,0,.45);
+  --canvas-bg:#0b1220;
+  --chart-grid:#1f2b40;
+  --chart-axis:#64748b;
+  --chart-label:#8c9bb3;
+  --chart-halo:#0b1220;
+}
+/* correzioni di leggibilità per i colori di testo «fissi» */
+:root[data-theme="dark"] .note-ok{color:#a7f3d0}
+:root[data-theme="dark"] .note-warn{color:#fcd9a5}
+:root[data-theme="dark"] .note-err{color:#fecaca}
+:root[data-theme="dark"] .note-key{color:#ddd6fe}
+:root[data-theme="dark"] .quiz-btn.correct{color:#a7f3d0}
+:root[data-theme="dark"] .quiz-exp.ok{color:#a7f3d0}
+:root[data-theme="dark"] .quiz-exp.no{color:#fecaca}
+:root[data-theme="dark"] .quiz-bar{background:#334155}
+:root[data-theme="dark"] .sol-box{border-color:#14532d}
+:root[data-theme="dark"] .eq-display{border-color:#27406a}
+:root[data-theme="dark"] .eq-display.violet{border-color:#3a2d66}
+:root[data-theme="dark"] .case-banner.c2{border-color:#14532d}
+:root[data-theme="dark"] .case-banner.c1{border-color:#5a4412}
+:root[data-theme="dark"] .case-banner.c0{border-color:#5a1f22}
+:root[data-theme="dark"] .case-banner.cn{border-color:#27406a}
+:root[data-theme="dark"] .case-banner.cv{border-color:#3a2d66}
+:root[data-theme="dark"] .sol-box{background:var(--success-soft)}
+:root[data-theme="dark"] .accordion details[open]{border-color:#2c4a6e}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>Limiti e derivate</h1>
-    <span class="sub">Analisi matematica · Triennio</span>
+    <div class="titles">
+      <h1>Limiti e derivate</h1>
+      <span class="sub">Analisi matematica · Triennio</span>
+    </div>
+    <button class="theme-toggle" id="themeBtn" type="button" aria-label="Attiva o disattiva il tema scuro" title="Tema chiaro / scuro">
+      <svg class="ic-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="ic-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
   </div>
 </header>
 
@@ -1477,7 +1552,7 @@ class Plot{
     const g=this.g;
     g.clearRect(0,0,this.w,this.h);
     const sx=niceStep((this.x2-this.x1)/9),sy=niceStep((this.y2-this.y1)/7);
-    g.lineWidth=1;g.strokeStyle='#eef1f6';
+    g.lineWidth=1;g.strokeStyle=CHART.grid;
     g.beginPath();
     for(let x=Math.ceil(this.x1/sx)*sx;x<=this.x2+1e-9;x+=sx){
       const px=this.X(x);g.moveTo(px,0);g.lineTo(px,this.h);
@@ -1487,14 +1562,14 @@ class Plot{
     }
     g.stroke();
     const y0=this.Y(0),x0=this.X(0);
-    g.strokeStyle='#9ca3af';g.lineWidth=1.4;
+    g.strokeStyle=CHART.axis;g.lineWidth=1.4;
     g.beginPath();
     if(y0>=0&&y0<=this.h){g.moveTo(0,y0);g.lineTo(this.w,y0);
       g.moveTo(this.w-8,y0-4);g.lineTo(this.w,y0);g.lineTo(this.w-8,y0+4);}
     if(x0>=0&&x0<=this.w){g.moveTo(x0,this.h);g.lineTo(x0,0);
       g.moveTo(x0-4,8);g.lineTo(x0,0);g.lineTo(x0+4,8);}
     g.stroke();
-    g.font='10.5px Inter,Roboto,system-ui,sans-serif';g.fillStyle='#9ca3af';
+    g.font='10.5px Inter,Roboto,system-ui,sans-serif';g.fillStyle=CHART.label;
     g.textAlign='center';
     const ty=Math.min(Math.max(y0+13,12),this.h-4);
     for(let x=Math.ceil(this.x1/sx)*sx;x<=this.x2+1e-9;x+=sx){
@@ -1545,31 +1620,31 @@ class Plot{
   point(x,y,color,label,dx,dy){
     const g=this.g,px=this.X(x),py=this.Y(y);
     g.save();
-    g.fillStyle=color;g.strokeStyle='#fff';g.lineWidth=2;
+    g.fillStyle=color;g.strokeStyle=CHART.halo;g.lineWidth=2;
     g.beginPath();g.arc(px,py,5.4,0,7);g.fill();g.stroke();
     if(label){
       g.font='bold 12px Inter,Roboto,system-ui,sans-serif';g.textAlign='left';
       const lx=px+(dx===undefined?8:dx),ly=py+(dy===undefined?-9:dy);
-      g.lineWidth=3.5;g.strokeStyle='rgba(255,255,255,.92)';
+      g.lineWidth=3.5;g.strokeStyle=CHART.halo;
       g.strokeText(label,lx,ly);g.fillStyle=color;g.fillText(label,lx,ly);
     }
     g.restore();
   }
   openDot(x,y,color){
     const g=this.g,px=this.X(x),py=this.Y(y);
-    g.save();g.fillStyle='#fff';g.strokeStyle=color;g.lineWidth=2.4;
+    g.save();g.fillStyle=CHART.bg;g.strokeStyle=color;g.lineWidth=2.4;
     g.beginPath();g.arc(px,py,5.2,0,7);g.fill();g.stroke();g.restore();
   }
   dot(x,y,color,r){
     const g=this.g,px=this.X(x),py=this.Y(y);
-    g.save();g.fillStyle=color;g.strokeStyle='#fff';g.lineWidth=1.6;
+    g.save();g.fillStyle=color;g.strokeStyle=CHART.halo;g.lineWidth=1.6;
     g.beginPath();g.arc(px,py,r||3.6,0,7);g.fill();g.stroke();g.restore();
   }
   label(x,y,text,color,dx,dy){
     const g=this.g;g.save();
     g.font='bold 12px Inter,Roboto,system-ui,sans-serif';g.textAlign='left';
     const lx=this.X(x)+(dx||0),ly=this.Y(y)+(dy||0);
-    g.lineWidth=3.5;g.strokeStyle='rgba(255,255,255,.92)';
+    g.lineWidth=3.5;g.strokeStyle=CHART.halo;
     g.strokeText(text,lx,ly);g.fillStyle=color;g.fillText(text,lx,ly);
     g.restore();
   }
@@ -1584,6 +1659,32 @@ window.addEventListener('resize',()=>{
   clearTimeout(rszT);rszT=setTimeout(redrawVisible,120);
 });
 const COLF='#2563eb',COLA='#f59e0b',COLV='#7c3aed',COLPOS='#10b981',COLNEG='#ef4444',COLGREY='#9ca3af';
+
+/* ---------------- Tema chiaro/scuro ---------------- */
+let CHART={bg:'#fff',grid:'#eef1f6',axis:'#9ca3af',label:'#9ca3af',halo:'#fff'};
+function readChart(){
+  const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim();
+  return{bg:g('--canvas-bg')||'#fff',grid:g('--chart-grid')||'#eef1f6',
+    axis:g('--chart-axis')||'#9ca3af',label:g('--chart-label')||'#9ca3af',halo:g('--chart-halo')||'#fff'};
+}
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('lim-der-theme',t)}catch(e){}
+  const m=document.querySelector('meta[name=theme-color]');
+  if(m)m.setAttribute('content',t==='dark'?'#0f172a':'#f9fafb');
+  CHART=readChart();
+  redrawVisible();
+}
+(function(){
+  let t;try{t=localStorage.getItem('lim-der-theme')}catch(e){}
+  if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t);
+  const m=document.querySelector('meta[name=theme-color]');
+  if(m)m.setAttribute('content',t==='dark'?'#0f172a':'#f9fafb');
+  CHART=readChart();
+})();
+{const tb=document.getElementById('themeBtn');
+ if(tb)tb.addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));}
 
 /* numerical derivative (central difference) — fallback */
 function ndiff(f,x){const h=1e-5;return(f(x+h)-f(x-h))/(2*h);}
